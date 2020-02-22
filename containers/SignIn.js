@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { Platform, StyleSheet, Text, View, Image, Button } from 'react-native';
+import React, { Component} from 'react'
+import {StyleSheet, Text, View, Image, Button} from 'react-native';
 import Logo from '../images/DMMapperLogo.png'
 import t from 'tcomb-form-native';
 
@@ -46,16 +46,37 @@ const options = {
   stylesheet: formStyles
 };
 
-
-
 class SignIn extends Component {
+
+  state = {
+    token: "",
+    username: "",
+  }
 
   handleSubmit = () => {
     const value = this._form.getValue(); // use that ref to get the form value
-    console.log('value: ', value);
+    fetch('http://10.0.0.66:3000/login', {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(value)
+    })
+    .then(response => response.json())
+    .then(responsejson => {
+      this.props.setUsername(responsejson.username)
+      this.props.setToken(responsejson.token)
+      
+    })
+    .catch(function(error) {
+      console.log('There has been a problem with your fetch operation: ' + error.message);
+        throw error
+    })
   }
 
   render(){
+
     return(
       <View style = {styles.container}>
         <Image

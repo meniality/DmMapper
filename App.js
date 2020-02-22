@@ -1,18 +1,26 @@
-import React, { Component } from 'react';
-import { Platform, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import SignIn from './containers/SignIn'
+import MainMenu from './containers/MainMenu'
 
 
 
-export default class App extends Component {
-  render() {
+export default function App() {
+
+const [username, setUsername] = useState("")
+const [token, setToken] = useState("")
+
+
     return (
+      console.log(username),
       <View style={styles.container}>
-        <SignIn />
+        {!username
+        ?<SignIn setUsername = {setUsername} setToken = {setToken}/>
+        :<MainMenu username = {username} setUsername = {setUsername} setToken = {setToken}/>}
       </View>
     );
   }
-}
+
 
 const styles = StyleSheet.create({
   container: {
