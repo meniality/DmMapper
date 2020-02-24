@@ -19,7 +19,8 @@ export default function MainMenu(props) {
           title = "Log Out"
           onPress = {() => {
             props.setUsername("")
-            props.setToken("")}
+            props.setToken("")
+            props.navigation.navigate('SignIn')}
           }
         />
       </View>

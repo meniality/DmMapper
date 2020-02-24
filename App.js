@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import SignIn from './containers/SignIn'
 import MainMenu from './containers/MainMenu'
+import CreateNewUser from './containers/CreateNewUser'
 
 
 
@@ -10,14 +13,30 @@ export default function App() {
 const [username, setUsername] = useState("")
 const [token, setToken] = useState("")
 
+const Stack = createStackNavigator();
 
     return (
-      console.log(username),
-      <View style={styles.container}>
-        {!username
-        ?<SignIn setUsername = {setUsername} setToken = {setToken}/>
-        :<MainMenu username = {username} setUsername = {setUsername} setToken = {setToken}/>}
-      </View>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="SignIn">
+            {props => <SignIn {...props} 
+              setUsername={setUsername} 
+              setToken={setToken}/>}
+          </Stack.Screen>
+          <Stack.Screen name="MainMenu">
+            {props => <MainMenu {...props} 
+              setUsername={setUsername} 
+              setToken={setToken}
+              username={username}/>}
+          </Stack.Screen>
+          <Stack.Screen name="Create New User">
+            {props => <CreateNewUser {...props} 
+              setUsername={setUsername} 
+              setToken={setToken}
+              />}
+          </Stack.Screen>
+        </Stack.Navigator>
+      </NavigationContainer>
     );
   }
 
