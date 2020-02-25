@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {StyleSheet, Text, View, Image, Button} from 'react-native';
+import {StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import Logo from '../images/DMMapperLogo.png'
 import t from 'tcomb-form-native';
 
@@ -82,26 +82,28 @@ export default class CreateNewUser extends Component{
   
   render(){
     return(
-      <View style={styles.container}>
-        <Image
-          style = {{width: 300, height: 100}}
-          source = {Logo}
-        />
-        <Text style={styles.text}>
-          Please enter your information {"\n"}
-          to begin your journey.
-        </Text>
-        <View style = {styles.form}>
-          <Form
-            ref="form"
-            options={options}
-            type={User} />
-              <Button style={styles.button}
-                title="Create User"
-                onPress={this.handleSubmit}
-              />
-          </View>
-      </View>
+      <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+        <View style={styles.container}>
+          <Image
+            style = {{width: 300, height: 100}}
+            source = {Logo}
+          />
+          <Text style={styles.text}>
+            Please enter your information {"\n"}
+            to begin your journey.
+          </Text>
+          <View style = {styles.form}>
+            <Form
+              ref="form"
+              options={options}
+              type={User} />
+                <Button style={styles.button}
+                  title="Create User"
+                  onPress={this.handleSubmit}
+                />
+            </View>
+        </View>
+      </TouchableWithoutFeedback>
     )
   }
 }

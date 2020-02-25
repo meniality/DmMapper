@@ -1,15 +1,15 @@
 import React from 'react'
-import {StyleSheet, Text, View, Image, Button, ShadowPropTypesIOS} from 'react-native'
+import {StyleSheet, Text, View, Button,} from 'react-native'
 
 export default function MainMenu(props) {
   return(
     <View style = {styles.container}>
-      <Text>Welcome, {props.username}</Text>
+      <Text style = {styles.text}>Welcome,  {props.username}</Text>
 
       <View style = {styles.buttonContainer}>
         <Button
           title ="Worlds Menu"
-          onPress = ""
+          onPress = {() => {props.navigation.navigate('Worlds Menu')}}
         />
         <Button
           title ="Profile"
@@ -38,4 +38,8 @@ const styles = StyleSheet.create({
     flex: .3,
     justifyContent: "space-between"
   },
+  text: {
+    marginBottom: 20,
+    fontSize: 20,
+  }
 })

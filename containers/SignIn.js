@@ -1,5 +1,5 @@
 import React, { Component} from 'react'
-import {StyleSheet, Text, View, Image, Button} from 'react-native';
+import {StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import Logo from '../images/DMMapperLogo.png'
 import t from 'tcomb-form-native';
 
@@ -51,7 +51,7 @@ const options = {
 class SignIn extends Component {
   handleSubmit = () => {
     const value = this.refs.form.getValue();
-    fetch('http://10.225.128.102:3000/login', {
+    fetch('http://10.225.130.145:3000/login', {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -74,33 +74,35 @@ class SignIn extends Component {
 
   render(){
     return(
-      <View style = {styles.container}>
-        <Image
-          style = {{width: 300, height: 100}}
-          source = {Logo}
-        />
-        <Text style = {styles.text}>
-          Welcome to the Dm Mapper, {"\n"} 
-          a tool to help create a manage your {"\n"}
-          fantasy world! Sign in to begin your {"\n"}
-          journey!
-        </Text>
+      <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+        <View style = {styles.container}>
+          <Image
+            style = {{width: 300, height: 100}}
+            source = {Logo}
+          />
+          <Text style = {styles.text}>
+            Welcome to the Dm Mapper, {"\n"} 
+            a tool to help create a manage your {"\n"}
+            fantasy world! Sign in to begin your {"\n"}
+            journey!
+          </Text>
 
-        <Form 
-          ref="form"
-          options={options}
-          type={User} />
-        <View style={styles.buttonsContainer}>
-          <Button style={styles.button}
-            title="Sign In!"
-            onPress={this.handleSubmit}
-          />
-          <Button style={styles.button}
-            title="Sign Up!"
-            onPress={() => {this.props.navigation.navigate('Create New User')}}
-          />
+          <Form 
+            ref="form"
+            options={options}
+            type={User} />
+          <View style={styles.buttonsContainer}>
+            <Button style={styles.button}
+              title="Sign In!"
+              onPress={this.handleSubmit}
+            />
+            <Button style={styles.button}
+              title="Sign Up!"
+              onPress={() => {this.props.navigation.navigate('Create New User')}}
+            />
+          </View>
         </View>
-      </View>
+      </TouchableWithoutFeedback>
     )
   }
 }
