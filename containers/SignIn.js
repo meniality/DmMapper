@@ -82,7 +82,7 @@ class SignIn extends Component {
           />
           <Text style = {styles.text}>
             Welcome to the Dm Mapper, {"\n"} 
-            a tool to help create a manage your {"\n"}
+            a tool to help create and manage your {"\n"}
             fantasy world! Sign in to begin your {"\n"}
             journey!
           </Text>
@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     flex: 1,
     alignItems: 'center',
+    backgroundColor: '#fffaf0'
   },
   text: {
     textAlign: "center",

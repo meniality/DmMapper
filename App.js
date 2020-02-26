@@ -7,6 +7,7 @@ import CreateNewUser from './containers/CreateNewUser'
 import WorldsMenu from './containers/WorldsMenu'
 import WorldMenu from './containers/WorldMenu'
 import ShowWorldCards from './containers/ShowWorldCards'
+import CreateNewWorld from './containers/CreateNewWorld'
 
 
 
@@ -54,6 +55,11 @@ const Stack = createStackNavigator();
             </Stack.Screen>
             <Stack.Screen name="Show World Cards">
               {props => <ShowWorldCards {...props} 
+                token={token}
+                />}
+            </Stack.Screen>
+            <Stack.Screen name="Create A New World">
+              {props => <CreateNewWorld {...props} 
                 token={token}
                 />}
             </Stack.Screen>

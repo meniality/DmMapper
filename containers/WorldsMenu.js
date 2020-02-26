@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {StyleSheet, Text, View, FlatList, TouchableOpacity, Image} from 'react-native'
+import {StyleSheet, Text, View, FlatList, TouchableOpacity, Image, Alert} from 'react-native'
 import Card from '../shared/Card'
 
 
@@ -8,43 +8,79 @@ export default function WorldsMenu(props){
 const [worlds, setWorlds] = useState({})
 const [cards, setCards] = useState({})
 
-  useEffect(() => {
-    fetch('http://10.225.132.127:3000/campaigns', {
-      method: "get",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
+const addNewWorldToWorlds = (newWorld) => {
+  setWorlds([...worlds, newWorld])
+}
+
+const removeWorldFromWorlds = (removeWorld) => {
+  const newWorlds = worlds.filter(world =>{
+    return world.id !== removeWorld.id
+  })
+  setWorlds(newWorlds)
+}
+
+const removeWorldFromDatabase = (campaignId) => {
+  fetch(`http://10.225.132.127:3000/campaigns/${campaignId}`,{
+    method: 'DELETE',
+    headers: {
       authorization: `bearer ${props.token}`
-      }
-    })
-    .then(response => response.json())
-    .then(responsejson => {setWorlds(responsejson)})
-  
-    fetch('http://10.225.132.127:3000/cards', {
-      method: "get",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      authorization: `bearer ${props.token}`
-      }
-    })
-    .then(response => response.json())
-    .then(responsejson => {setCards(responsejson)})
-  }, [])
+    }
+  })
+}
+
+useEffect(() => {
+  fetch('http://10.225.132.127:3000/campaigns', {
+    method: "get",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    authorization: `bearer ${props.token}`
+    }
+  })
+  .then(response => response.json())
+  .then(responsejson => {setWorlds(responsejson)})
+
+  fetch('http://10.225.132.127:3000/cards', {
+    method: "get",
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    authorization: `bearer ${props.token}`
+    }
+  })
+  .then(response => response.json())
+  .then(responsejson => {setCards(responsejson)})
+}, [])
 
   return(
-    <View>
+    <View style = {styles.container}>
       <FlatList
         data={worlds}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={()=> props.navigation.navigate('World Menu', {item, cards})}>
+          <TouchableOpacity 
+            onPress={()=> props.navigation.navigate('World Menu', {item, cards})}
+            onLongPress={() => 
+              Alert.alert("Delete This World?",
+                "are you sure?",
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {text: 'OK', onPress: () => {
+                  removeWorldFromWorlds(item)
+                  removeWorldFromDatabase(item.id)
+                }},
+              ]
+              )}
+            >
             <Card>
               <Text style={styles.text}>{item.name}</Text>
             </Card>
           </TouchableOpacity>
         )}
       />
-        <TouchableOpacity>
+        <TouchableOpacity onPress={()=> props.navigation.navigate('Create A New World', {addNewWorldToWorlds})}>
             <Card>
               <View style={styles.addButtonView}>
                 <Image style={styles.image}source={require('../images/AddButton.png')}/>
@@ -56,6 +92,10 @@ const [cards, setCards] = useState({})
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#fffaf0',
+    flex: 1,
+  },
   text: {
     fontSize: 20,
     textAlign: "center"
@@ -67,6 +107,5 @@ const styles = StyleSheet.create({
   image: {
     width: 50,
     height: 50,
-    // resizeMode: 'center'
   }
 })

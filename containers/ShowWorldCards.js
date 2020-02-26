@@ -27,20 +27,23 @@ export default function ShowWorldCards(props){
     <View style={styles.container}>
       <Modal visible={modalOpen} animationType='slide'>
         <View style={styles.infoScreen}>
-          <ScrollView >
-            <Button title='Close' onPress={()=>{setModalOpen(false)}}></Button>
-            <Text>{selectedCard.name}</Text>
-            <Image 
-              style={{width: 250, height: 250, resizeMode: 'center'}}
-              source={{uri: selectedCard.image}}> 
-            </Image>
-            <Text>{selectedCard.short_description}</Text>
-            <Text>{selectedCard.text}</Text>
+          <ScrollView>
+            <View style = {styles.scroll}>
+              <Button title='Close' onPress={()=>{setModalOpen(false)}}></Button>
+              <Text style = {styles.title}>{selectedCard.name}</Text>
+              <Image 
+                style={{width: 250, height: 250, resizeMode: 'center'}}
+                source={{uri: selectedCard.image}}> 
+              </Image>
+              <Text style = {styles.short_description}>{selectedCard.short_description}</Text>
+              <Text>{selectedCard.text}</Text>
+            </View>
           </ScrollView>
         </View>
           <View style={styles.flatlist}>
-            <Text>Parent Cards:</Text>
+            <Text style={styles.cardLabels}>Parent Cards:</Text>
               <FlatList
+                horizontal={true}
                 data={selectedCard.parentCards}
                 renderItem={({ item }) => (
                   <TouchableOpacity onPress={()=> {
@@ -52,8 +55,9 @@ export default function ShowWorldCards(props){
                   </TouchableOpacity>
                 )}
               />
-            <Text>Child Cards:</Text>
+            <Text style={styles.cardLabels}>Child Cards:</Text>
               <FlatList
+                horizontal={true}
                 data={selectedCard.childCards}
                 renderItem={({ item }) => (
                   <TouchableOpacity onPress={()=> {
@@ -86,21 +90,36 @@ export default function ShowWorldCards(props){
 }
 
 const styles = StyleSheet.create({
-  // container:{
-  //   flex: 1,
-  // },
+  container:{
+    backgroundColor: '#fffaf0'
+  },
   modal: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    // overflow: "scroll",
-    // height:1000,
+    backgroundColor: '#fffaf0'
+  },
+  scroll: {
+    alignItems: "center",
   },
   infoScreen: {
-    flex: 2.2,
+    flex: 2.5,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: '#fffaf0'
+  },
+  title:{
+    fontSize: 30,
+  },
+  short_description:{
+    fontSize: 20,
   },
   flatlist: {
     flex: 1,
     height: 300,
+    backgroundColor: '#f5f0e6'
+  },
+  cardLabels:{
+    fontSize:20,
   }
 })

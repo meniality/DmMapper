@@ -54,7 +54,7 @@ export default class CreateNewUser extends Component{
   handleSubmit = () => {
     const value = this.refs.form.getValue();
     if (value && value.password == value.verifyPassword){
-      fetch('http://10.225.128.102:3000/users', {
+      fetch('http://10.225.132.127:3000/users', {
         method: "POST",
         headers: {
           'Accept': 'application/json',
@@ -97,11 +97,11 @@ export default class CreateNewUser extends Component{
               ref="form"
               options={options}
               type={User} />
-                <Button style={styles.button}
+                <Button
                   title="Create User"
                   onPress={this.handleSubmit}
                 />
-            </View>
+          </View>
         </View>
       </TouchableWithoutFeedback>
     )
@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   form:{
-    // alignItems: "center",
     width: 200,
   }
 })
