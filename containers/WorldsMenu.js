@@ -9,7 +9,7 @@ const [worlds, setWorlds] = useState({})
 const [cards, setCards] = useState({})
 
   useEffect(() => {
-    fetch('http://10.225.130.145:3000/campaigns', {
+    fetch('http://10.225.132.127:3000/campaigns', {
       method: "get",
       headers: {
         'Accept': 'application/json',
@@ -20,7 +20,7 @@ const [cards, setCards] = useState({})
     .then(response => response.json())
     .then(responsejson => {setWorlds(responsejson)})
   
-    fetch('http://10.225.130.145:3000/cards', {
+    fetch('http://10.225.132.127:3000/cards', {
       method: "get",
       headers: {
         'Accept': 'application/json',

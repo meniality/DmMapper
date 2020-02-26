@@ -19,7 +19,11 @@ const Stack = createStackNavigator();
 
     return (
         <NavigationContainer>
-          <Stack.Navigator>
+          <Stack.Navigator 
+            screenOptions={{
+              headerTintColor: 'white',
+              headerStyle: { backgroundColor: 'tomato' },
+            }}>
             <Stack.Screen name="SignIn">
               {props => <SignIn {...props} 
                 setUsername={setUsername} 
