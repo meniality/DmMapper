@@ -2,11 +2,13 @@ import React, {useState} from 'react'
 import {StyleSheet, Text, View, Button, FlatList, TouchableOpacity, Modal, Image} from 'react-native'
 import Card from '../shared/Card'
 import { ScrollView } from 'react-native-gesture-handler'
+import EditCardForm from '../shared/NewOrEditCardForm'
 
 export default function ShowWorldCards(props){
 
   const [modalOpen, setModalOpen] = useState(false)
-  const [selectedCard, setSelectedCard] = useState({})
+  const [selectedCard, setSelectedCard] = useState([])
+  const [newCardModalOpen, setNewCardModalOpen] = useState(false)
 
   const id = props.route.params.worldId
   
@@ -37,41 +39,55 @@ export default function ShowWorldCards(props){
               </Image>
               <Text style = {styles.short_description}>{selectedCard.short_description}</Text>
               <Text>{selectedCard.text}</Text>
+              <Button title='Edit'></Button>
             </View>
           </ScrollView>
         </View>
-          <View style={styles.flatlist}>
-            <Text style={styles.cardLabels}>Parent Cards:</Text>
-              <FlatList
-                horizontal={true}
-                data={selectedCard.parentCards}
-                renderItem={({ item }) => (
-                  <TouchableOpacity onPress={()=> {
-                    setSelectedCardFromModal(item.id)
-                    }}>
-                    <Card>
-                      <Text>{item.name}</Text>
-                    </Card>
-                  </TouchableOpacity>
-                )}
-              />
-            <Text style={styles.cardLabels}>Child Cards:</Text>
-              <FlatList
-                horizontal={true}
-                data={selectedCard.childCards}
-                renderItem={({ item }) => (
-                  <TouchableOpacity onPress={()=> {
-                    setSelectedCardFromModal(item.id)
-                    }}>
-                    <Card>
-                      <Text>{item.name}</Text>
-                    </Card>
-                  </TouchableOpacity>
-                )}
-              />
-            </View>  
+        <View style={styles.flatlist}>
+          <Text style={styles.cardLabels}>Parent Cards:</Text>
+            <FlatList
+              horizontal={true}
+              data={selectedCard.parentCards}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={()=> {
+                  setSelectedCardFromModal(item.id)
+                  }}>
+                  <Card>
+                    <Text>{item.name}</Text>
+                  </Card>
+                </TouchableOpacity>
+              )}
+            />
+          <Text style={styles.cardLabels}>Child Cards:</Text>
+            <FlatList
+              horizontal={true}
+              data={selectedCard.childCards}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={()=> {
+                  setSelectedCardFromModal(item.id)
+                  }}>
+                  <Card>
+                    <Text>{item.name}</Text>
+                  </Card>
+                </TouchableOpacity>
+              )}
+            />
+          </View>  
         </Modal>
 
+
+
+        <Modal visible={newCardModalOpen} animationType='slide'>
+          <EditCardForm setNewCardModalOpen= {setNewCardModalOpen}/>
+        </Modal>               
+
+        <TouchableOpacity onPress={() => setNewCardModalOpen(true)}>
+          <Card>
+            <View style={styles.addButtonView}>
+              <Image style={styles.image}source={require('../images/AddButton.png')}/>
+            </View>
+          </Card>
+        </TouchableOpacity>          
         <FlatList
         data={worldCards()}
         renderItem={({ item }) => (
@@ -121,5 +137,13 @@ const styles = StyleSheet.create({
   },
   cardLabels:{
     fontSize:20,
-  }
+  },
+  addButtonView:{
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  image: {
+    width: 50,
+    height: 50,
+  },
 })

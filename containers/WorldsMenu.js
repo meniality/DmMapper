@@ -73,6 +73,7 @@ useEffect(() => {
                 }},
               ]
               )}
+              keyExtractor={(item) => item }
             >
             <Card>
               <Text style={styles.text}>{item.name}</Text>
@@ -80,13 +81,13 @@ useEffect(() => {
           </TouchableOpacity>
         )}
       />
-        <TouchableOpacity onPress={()=> props.navigation.navigate('Create A New World', {addNewWorldToWorlds})}>
-            <Card>
-              <View style={styles.addButtonView}>
-                <Image style={styles.image}source={require('../images/AddButton.png')}/>
-              </View>
-            </Card>
-          </TouchableOpacity>
+      <TouchableOpacity onPress={()=> props.navigation.navigate('Create A New World', {addNewWorldToWorlds})}>
+        <Card>
+          <View style={styles.addButtonView}>
+            <Image style={styles.image}source={require('../images/AddButton.png')}/>
+          </View>
+        </Card>
+      </TouchableOpacity>
     </View>
   )
 }

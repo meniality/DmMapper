@@ -13,7 +13,7 @@ export default function MainMenu(props) {
         />
         <Button
           title ="Profile"
-          onPress = ""
+          
         />
         <Button 
           title = "Log Out"
