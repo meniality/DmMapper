@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {StyleSheet, Text, View, FlatList, TouchableOpacity, Image, Alert} from 'react-native'
 import Card from '../shared/Card'
-
+import URL from '../shared/BackendURL'
 
 export default function WorldsMenu(props){
 
@@ -20,7 +20,7 @@ const removeWorldFromWorlds = (removeWorld) => {
 }
 
 const removeWorldFromDatabase = (campaignId) => {
-  fetch(`http://10.225.132.127:3000/campaigns/${campaignId}`,{
+  fetch(`http://${URL}/campaigns/${campaignId}`,{
     method: 'DELETE',
     headers: {
       authorization: `bearer ${props.token}`
@@ -29,7 +29,7 @@ const removeWorldFromDatabase = (campaignId) => {
 }
 
 useEffect(() => {
-  fetch('http://10.225.132.127:3000/campaigns', {
+  fetch(`http://${URL}/campaigns`, {
     method: "get",
     headers: {
       'Accept': 'application/json',
@@ -40,7 +40,7 @@ useEffect(() => {
   .then(response => response.json())
   .then(responsejson => {setWorlds(responsejson)})
 
-  fetch('http://10.225.132.127:3000/cards', {
+  fetch(`http://${URL}/cards`, {
     method: "get",
     headers: {
       'Accept': 'application/json',

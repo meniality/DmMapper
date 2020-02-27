@@ -2,6 +2,7 @@ import React, { Component} from 'react'
 import {StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import Logo from '../images/DMMapperLogo.png'
 import t from 'tcomb-form-native';
+import URL from '../shared/BackendURL'
 
 const Form = t.form.Form;
 
@@ -51,7 +52,7 @@ const options = {
 class SignIn extends Component {
   handleSubmit = () => {
     const value = this.refs.form.getValue();
-    fetch('http://10.225.132.127:3000/login', {
+    fetch(`http://${URL}/login`, {
       method: "POST",
       headers: {
         'Accept': 'application/json',
