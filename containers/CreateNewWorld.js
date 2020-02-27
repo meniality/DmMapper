@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import {StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import t from 'tcomb-form-native';
-import URL from '../shared/BackendURL'
+import { URL } from '../shared/BackendURL'
 
 const Form = t.form.Form;
 

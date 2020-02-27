@@ -1,8 +1,8 @@
 import React, { Component} from 'react'
-import {StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import {StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
 import Logo from '../images/DMMapperLogo.png'
 import t from 'tcomb-form-native';
-import URL from '../shared/BackendURL'
+import { URL } from '../shared/BackendURL'
 
 const Form = t.form.Form;
 
@@ -74,35 +74,38 @@ class SignIn extends Component {
   }
 
   render(){
+    console.log(URL)
     return(
       <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
-        <View style = {styles.container}>
-          <Image
-            style = {{width: 300, height: 100}}
-            source = {Logo}
-          />
-          <Text style = {styles.text}>
-            Welcome to the Dm Mapper, {"\n"} 
-            a tool to help create and manage your {"\n"}
-            fantasy world! Sign in to begin your {"\n"}
-            journey!
-          </Text>
+        <ScrollView>
+          <View style = {styles.container}>
+            <Image
+              style = {{width: 300, height: 100}}
+              source = {Logo}
+            />
+            <Text style = {styles.text}>
+              Welcome to the Dm Mapper, {"\n"} 
+              a tool to help create and manage your {"\n"}
+              fantasy world! Sign in to begin your {"\n"}
+              journey!
+            </Text>
 
-          <Form 
-            ref="form"
-            options={options}
-            type={User} />
-          <View style={styles.buttonsContainer}>
-            <Button style={styles.button}
-              title="Sign In!"
-              onPress={this.handleSubmit}
-            />
-            <Button style={styles.button}
-              title="Sign Up!"
-              onPress={() => {this.props.navigation.navigate('Create New User')}}
-            />
+            <Form 
+              ref="form"
+              options={options}
+              type={User} />
+            <View style={styles.buttonsContainer}>
+              <Button style={styles.button}
+                title="Sign In!"
+                onPress={this.handleSubmit}
+              />
+              <Button style={styles.button}
+                title="Sign Up!"
+                onPress={() => {this.props.navigation.navigate('Create New User')}}
+              />
+            </View>
           </View>
-        </View>
+        </ScrollView>
       </TouchableWithoutFeedback>
     )
   }
@@ -113,7 +116,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#fffaf0'
+    backgroundColor: '#fffaf0',
+    height: 800
   },
   text: {
     textAlign: "center",

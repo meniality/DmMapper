@@ -12,7 +12,7 @@ export default function WorldMenu(props) {
         <View style={styles.buttonContainer}>
         <Button
           title="World Map"
-          onPress=""
+          
         />
         <Button
           title="Show World Cards"

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import {StyleSheet, Text, View, FlatList, TouchableOpacity, Image, Alert} from 'react-native'
 import Card from '../shared/Card'
-import URL from '../shared/BackendURL'
+import { URL } from '../shared/BackendURL'
 
 export default function WorldsMenu(props){
 

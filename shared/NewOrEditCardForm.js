@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import {StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
 import t from 'tcomb-form-native';
 
 const Form = t.form.Form;
@@ -13,14 +13,20 @@ const User = t.struct({
 
 const formStyles = {
   ...Form.stylesheet,
+  textbox: {
+    normal: {
+      ...Form.stylesheet.textbox.normal,  
+      backgroundColor: 'white',
+    }
+  },
   controlLabel: {
     normal: {
       color: 'green',
       fontSize: 18,
       marginBottom: 7,
       fontWeight: '600',
-      width: 200,
-      textAlign: 'center'
+      width: 300,
+      textAlign: 'center',
     },
     error: {
       color: 'red',
@@ -47,15 +53,26 @@ const options = {
       multiline: true,
       stylesheet: {
           ...Form.stylesheet,
+          controlLabel:{
+            normal: {
+              color: 'green',
+              fontSize: 18,
+              marginBottom: 7,
+              fontWeight: '600',
+              width: 300,
+              textAlign: 'center',
+            },
+          },
           textbox: {
               ...Form.stylesheet.textbox,
               normal: {
-                  ...Form.stylesheet.textbox.normal,
-                  height: 150
+                  ...Form.stylesheet.textbox.normal,  
+                  backgroundColor: 'white',
+                  height: 400,
               },
               error: {
                   ...Form.stylesheet.textbox.error,
-                  height: 150
+                  height: 400
               }
           }
       }
@@ -71,19 +88,23 @@ export default class NewOrEditCardForm extends Component{
   
   render(){
     return(
-      <View>
-        <Button title='Close' onPress={()=>{this.props.setNewCardModalOpen(false)}}></Button>
-        <Form 
-            ref="form"
-            options={options}
-            type={User} />
-          <View style={styles.buttonsContainer}>
-            <Button style={styles.button}
-              title="Submit"
-              onPress={this.handleSubmit}
-            />
+      <ScrollView>
+        <View style = {styles.container}>
+          <View style={styles.closeButton}>
+            <Button title='Close' onPress={()=>{this.props.setNewCardModalOpen(false)}}></Button>
           </View>
-      </View>
+          <Form 
+              ref="form"
+              options={options}
+              type={User} />
+            <View style={styles.buttonsContainer}>
+              <Button style={styles.button}
+                title="Submit"
+                onPress={this.handleSubmit}
+              />
+            </View>
+        </View>
+      </ScrollView>
     )
   }
 }
@@ -93,18 +114,15 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     flex: 1,
     alignItems: 'center',
-    backgroundColor: '#fffaf0'
+    backgroundColor: '#fffaf0',
+    height: 1300,
+    overflow: 'scroll',
   },
-  text: {
-    textAlign: "center",
-    marginBottom: 20,
+  closeButton: {
+    height: 60
   },
   buttonsContainer:{
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     width: 200,
   },
-  button: {
-    marginLeft: 30,
-  }
 })
