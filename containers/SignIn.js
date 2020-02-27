@@ -74,7 +74,6 @@ class SignIn extends Component {
   }
 
   render(){
-    console.log(URL)
     return(
       <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
         <ScrollView>

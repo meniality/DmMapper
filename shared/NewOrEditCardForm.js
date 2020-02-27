@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import {StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
 import t from 'tcomb-form-native';
+import { StackActions } from '@react-navigation/native';
+import {URL} from '../shared/BackendURL'
 
 const Form = t.form.Form;
 
@@ -86,7 +88,28 @@ const options = {
 
 export default class NewOrEditCardForm extends Component{
   
+  handleSubmit = () => {
+    const value = this.refs.form.getValue();
+
+    fetch(`http://${URL}/cards#campaign_cards`, {
+        method: "POST",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          authorization: `bearer ${this.props.token}`
+        },
+        body: JSON.stringify({card:{...value, campaign_id: this.props.id}})
+      })
+      .then(response => response.json())
+      .then(responsejson => {
+        this.props.addNewCardToCards(responsejson)
+        this.props.setNewCardModalOpen(false)
+        this.props.navigation.navigate("Worlds Menu")
+      })
+  }
+
   render(){
+    console.log(this.props.navigation.goBack)
     return(
       <ScrollView>
         <View style = {styles.container}>

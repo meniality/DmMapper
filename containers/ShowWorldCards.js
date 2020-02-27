@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
-import {StyleSheet, Text, View, Button, FlatList, TouchableOpacity, Modal, Image} from 'react-native'
+import {StyleSheet, Text, View, Button, FlatList, TouchableOpacity, Modal, Image, Alert} from 'react-native'
 import Card from '../shared/Card'
 import { ScrollView } from 'react-native-gesture-handler'
-import EditCardForm from '../shared/NewOrEditCardForm'
+import NewCardForm from '../shared/NewOrEditCardForm'
 
 export default function ShowWorldCards(props){
 
@@ -26,6 +26,7 @@ export default function ShowWorldCards(props){
   }
 
   return(
+    console.log(props.route.params.removeCardFromCards),
     <View style={styles.container}>
       <Modal visible={modalOpen} animationType='slide'>
         <View style={styles.infoScreen}>
@@ -78,7 +79,13 @@ export default function ShowWorldCards(props){
 
 
         <Modal visible={newCardModalOpen} animationType='slide'>
-          <EditCardForm setNewCardModalOpen= {setNewCardModalOpen}/>
+          <NewCardForm 
+            {...props}
+            token = {props.token} 
+            id = {id}
+            setNewCardModalOpen={setNewCardModalOpen} 
+            addNewCardToCards={props.route.params.addNewCardToCards}
+          />
         </Modal>               
 
         <TouchableOpacity onPress={() => setNewCardModalOpen(true)}>
@@ -87,27 +94,50 @@ export default function ShowWorldCards(props){
               <Image style={styles.image}source={require('../images/AddButton.png')}/>
             </View>
           </Card>
-        </TouchableOpacity>          
+        </TouchableOpacity>   
+    
         <FlatList
         data={worldCards()}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={()=> {
-            setModalOpen(true)
-            setSelectedCard(item)
-            }}>
+          <TouchableOpacity 
+            onPress={()=> {
+              setModalOpen(true)
+              setSelectedCard(item)
+              }}
+            onLongPress={() => 
+              Alert.alert("Delete This World?",
+                "are you sure?",
+              [
+                {
+                  text: 'Cancel',
+                  style: 'cancel',
+                },
+                {text: 'OK', onPress: () => {
+                  props.route.params.removeCardFromCards(item)
+                  props.route.params.removeCardFromDatabase(item.id)
+                }},
+              ]
+            )}
+          >
             <Card>
               <Text>{item.name}</Text>
             </Card>
           </TouchableOpacity>
         )}
       />
+  
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   container:{
-    backgroundColor: '#fffaf0'
+    backgroundColor: '#fffaf0',
+    paddingBottom: 0,
+    flex: 1
+  },
+  listContainer:{
+    
   },
   modal: {
     flex: 1,
@@ -146,4 +176,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
+  footer:{
+    height: 40
+  }
 })

@@ -5,11 +5,32 @@ import { URL } from '../shared/BackendURL'
 
 export default function WorldsMenu(props){
 
-const [worlds, setWorlds] = useState({})
-const [cards, setCards] = useState({})
+const [worlds, setWorlds] = useState([])
+const [cards, setCards] = useState([])
 
 const addNewWorldToWorlds = (newWorld) => {
   setWorlds([...worlds, newWorld])
+}
+
+const addNewCardToCards = (newCard) => {
+  setCards([...cards, newCard])
+}
+
+const removeCardFromCards = (removeCard) => {
+  console.log(removeCard)
+  const newCards = cards.filter(card => {
+    return card.id !== removeCard.id
+  })
+  setCards(newCards)
+}
+
+const removeCardFromDatabase = (cardId) => {
+  fetch(`http://${URL}/cards/${cardId}`,{
+    method: 'DELETE',
+    headers: {
+      authorization: `bearer ${props.token}`
+    }
+  })
 }
 
 const removeWorldFromWorlds = (removeWorld) => {
@@ -27,6 +48,7 @@ const removeWorldFromDatabase = (campaignId) => {
     }
   })
 }
+
 
 useEffect(() => {
   fetch(`http://${URL}/campaigns`, {
@@ -58,7 +80,13 @@ useEffect(() => {
         data={worlds}
         renderItem={({ item }) => (
           <TouchableOpacity 
-            onPress={()=> props.navigation.navigate('World Menu', {item, cards})}
+            onPress={()=> props.navigation.navigate('World Menu', 
+              {item, 
+              cards,
+              addNewCardToCards,
+              removeCardFromCards,
+              removeCardFromDatabase
+            })}
             onLongPress={() => 
               Alert.alert("Delete This World?",
                 "are you sure?",
