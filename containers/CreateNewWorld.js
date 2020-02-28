@@ -1,9 +1,14 @@
-import React, { Component } from 'react'
-import {StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import React, { useRef } from 'react'
+import {StyleSheet, Text, View, Button, TouchableWithoutFeedback, Keyboard} from 'react-native';
 import t from 'tcomb-form-native';
 import { URL } from '../shared/BackendURL'
+import {connect} from 'react-redux'
+import actions from '../src/actions'
+
+const {worldsActions: {addWorldToWorldsAction}} = actions
 
 const Form = t.form.Form;
+
 
 const User = t.struct({
   name: t.String,
@@ -42,47 +47,57 @@ const options = {
   stylesheet: formStyles
 };
 
-export default class CreateNewWorld extends Component {
+function CreateNewWorld(props) {  
 
-  handleSubmit = () => {
-    const value = this.refs.form.getValue();
+  const formdata = useRef(null)
 
+  const handleSubmit = () => {
+    const value = formdata.current.getValue();
+  
     fetch(`http://${URL}/campaigns`, {
         method: "POST",
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
-          authorization: `bearer ${this.props.token}`
+          authorization: `bearer ${props.token}`
         },
         body: JSON.stringify({campaign:{...value}})
       })
       .then(response => response.json())
       .then(responsejson => {
-        this.props.route.params.addNewWorldToWorlds(responsejson)
-        this.props.navigation.navigate('Worlds Menu')
+        props.addWorldToWorlds(responsejson)
+        props.navigation.navigate('Worlds Menu')
       })
   }
-
-  render(){
-    return(
-      <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
-        <View style={styles.container}>
-          <Text style={styles.text}>Choose A Name For Your New World</Text>
-          <View style = {styles.form}>
-              <Form
-                ref="form"
-                options={options}
-                type={User} />
-                  <Button
-                    title="Create World"
-                    onPress={this.handleSubmit}
-                  />
-          </View>
+  return(
+    <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+      <View style={styles.container}>
+        <Text style={styles.text}>Choose A Name For Your New World</Text>
+        <View style = {styles.form}>
+          <Form
+            ref={formdata}
+            options={options}
+            type={User} />
+            <Button
+              title="Create World"
+              onPress={handleSubmit}
+          />
         </View>
-      </TouchableWithoutFeedback>
+      </View>
+    </TouchableWithoutFeedback>
     )
   }
-}
+
+
+const mapStateToProps = () => ({
+  
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  addWorldToWorlds: (world) => dispatch(addWorldToWorldsAction(world))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateNewWorld)
 
 const styles = StyleSheet.create({
   container:{

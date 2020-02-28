@@ -3,8 +3,14 @@ import {StyleSheet, Text, View, Button, FlatList, TouchableOpacity, Modal, Image
 import Card from '../shared/Card'
 import { ScrollView } from 'react-native-gesture-handler'
 import NewCardForm from '../shared/NewOrEditCardForm'
+import {connect} from 'react-redux'
+import actions from '../src/actions'
 
-export default function ShowWorldCards(props){
+const {cardsActions: {removeCardFromCardsAction, addCardToCardsAction}} = actions
+
+function ShowWorldCards(props){
+
+  const {cards} = props
 
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedCard, setSelectedCard] = useState([])
@@ -13,7 +19,7 @@ export default function ShowWorldCards(props){
   const id = props.route.params.worldId
   
   const worldCards = () => {
-    return props.route.params.cards.filter(card => {
+    return cards.filter(card => {
       return card.campaign_id === id
     })
   }
@@ -26,7 +32,6 @@ export default function ShowWorldCards(props){
   }
 
   return(
-    console.log(props.route.params.removeCardFromCards),
     <View style={styles.container}>
       <Modal visible={modalOpen} animationType='slide'>
         <View style={styles.infoScreen}>
@@ -77,14 +82,13 @@ export default function ShowWorldCards(props){
         </Modal>
 
 
-
         <Modal visible={newCardModalOpen} animationType='slide'>
           <NewCardForm 
             {...props}
             token = {props.token} 
             id = {id}
             setNewCardModalOpen={setNewCardModalOpen} 
-            addNewCardToCards={props.route.params.addNewCardToCards}
+            cardsAction={props.addCardToCards}
           />
         </Modal>               
 
@@ -95,30 +99,29 @@ export default function ShowWorldCards(props){
             </View>
           </Card>
         </TouchableOpacity>   
-    
         <FlatList
-        data={worldCards()}
-        renderItem={({ item }) => (
-          <TouchableOpacity 
-            onPress={()=> {
-              setModalOpen(true)
-              setSelectedCard(item)
-              }}
-            onLongPress={() => 
-              Alert.alert("Delete This World?",
-                "are you sure?",
-              [
-                {
-                  text: 'Cancel',
-                  style: 'cancel',
-                },
-                {text: 'OK', onPress: () => {
-                  props.route.params.removeCardFromCards(item)
-                  props.route.params.removeCardFromDatabase(item.id)
-                }},
-              ]
-            )}
-          >
+          data={worldCards()}
+          renderItem={({ item }) => (
+            <TouchableOpacity 
+              onPress={()=> {
+                setModalOpen(true)
+                setSelectedCard(item)
+                }}
+              onLongPress={() => 
+                Alert.alert("Delete This World?",
+                  "are you sure?",
+                [
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                  {text: 'OK', onPress: () => {
+                    props.removeCardFromCards(item)
+                    props.route.params.removeCardFromDatabase(item.id)
+                  }},
+                ]
+              )}
+            >
             <Card>
               <Text>{item.name}</Text>
             </Card>
@@ -129,6 +132,17 @@ export default function ShowWorldCards(props){
     </View>
   )
 }
+
+const mapDispatchToProps = (dispatch) => ({
+  removeCardFromCards: (card) => dispatch(removeCardFromCardsAction(card)),
+  addCardToCards: (card) => dispatch(addCardToCardsAction(card))
+})
+
+const mapStateToProps = (state) => ({
+  cards: state.cards
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(ShowWorldCards)
 
 const styles = StyleSheet.create({
   container:{

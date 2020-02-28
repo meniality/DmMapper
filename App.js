@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SignIn from './containers/SignIn'
@@ -8,17 +8,18 @@ import WorldsMenu from './containers/WorldsMenu'
 import WorldMenu from './containers/WorldMenu'
 import ShowWorldCards from './containers/ShowWorldCards'
 import CreateNewWorld from './containers/CreateNewWorld'
+import store from './src/store/index'
+import {Provider} from 'react-redux'
 
+function App() {
 
-
-export default function App() {
-
-const [username, setUsername] = useState("")
-const [token, setToken] = useState("")
-
-const Stack = createStackNavigator();
+  const [username, setUsername] = useState("")
+  const [token, setToken] = useState("")
+  
+  const Stack = createStackNavigator();
 
     return (
+      <Provider store ={store}>
         <NavigationContainer>
           <Stack.Navigator 
             screenOptions={{
@@ -65,6 +66,9 @@ const Stack = createStackNavigator();
             </Stack.Screen>
           </Stack.Navigator>
         </NavigationContainer>
+      </Provider>
     );
   }
 
+ 
+  export default (App);

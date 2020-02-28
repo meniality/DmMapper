@@ -2,11 +2,7 @@ import React from 'react'
 import {StyleSheet, Text, View, Button} from 'react-native'
 
 export default function WorldMenu(props) {
-
-  const cards = props.route.params.cards
   const worldId = props.route.params.item.id
-  const addNewCardToCards = props.route.params.addNewCardToCards
-  const removeCardFromCards = props.route.params.removeCardFromCards
   const removeCardFromDatabase = props.route.params.removeCardFromDatabase
 
   return(
@@ -21,10 +17,7 @@ export default function WorldMenu(props) {
         <Button
           title="Show World Cards"
           onPress = {() => {props.navigation.navigate('Show World Cards', {
-            cards,
             worldId,
-            addNewCardToCards ,
-            removeCardFromCards,
             removeCardFromDatabase
           })}}
         />

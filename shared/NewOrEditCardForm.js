@@ -1,16 +1,15 @@
 import React, { Component } from 'react'
-import {StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
+import {StyleSheet, View, Button, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
 import t from 'tcomb-form-native';
-import { StackActions } from '@react-navigation/native';
 import {URL} from '../shared/BackendURL'
 
 const Form = t.form.Form;
 
 const User = t.struct({
   name: t.String,
-  image: t.String,
-  short_description: t.String,
-  text: t.String,
+  image: t.maybe(t.String),
+  short_description: t.maybe(t.String),
+  text: t.maybe(t.String),
 });
 
 const formStyles = {
@@ -18,6 +17,10 @@ const formStyles = {
   textbox: {
     normal: {
       ...Form.stylesheet.textbox.normal,  
+      backgroundColor: 'white',
+    },
+    error: {
+      ...Form.stylesheet.textbox.error,
       backgroundColor: 'white',
     }
   },
@@ -37,7 +40,7 @@ const formStyles = {
       margin: 5,
       fontWeight: '600',
       flexShrink: .8,
-      flexDirection: 'row' 
+      textAlign: 'center',
     }
   }
 }
@@ -46,6 +49,7 @@ const options = {
   fields: {
     name: {
       label: 'Card Title',
+      error: 'You need name for a card',
     },
     image: {
       label: 'Image URL'
@@ -74,7 +78,7 @@ const options = {
               },
               error: {
                   ...Form.stylesheet.textbox.error,
-                  height: 400
+                  height: 400,
               }
           }
       }
@@ -87,29 +91,28 @@ const options = {
 };
 
 export default class NewOrEditCardForm extends Component{
-  
   handleSubmit = () => {
     const value = this.refs.form.getValue();
-
-    fetch(`http://${URL}/cards#campaign_cards`, {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          authorization: `bearer ${this.props.token}`
-        },
-        body: JSON.stringify({card:{...value, campaign_id: this.props.id}})
-      })
-      .then(response => response.json())
-      .then(responsejson => {
-        this.props.addNewCardToCards(responsejson)
-        this.props.setNewCardModalOpen(false)
-        this.props.navigation.navigate("Worlds Menu")
-      })
+    
+    value
+    ? fetch(`http://${URL}/cards#campaign_cards`, {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            authorization: `bearer ${this.props.token}`
+          },
+          body: JSON.stringify({card:{...value, campaign_id: this.props.id}})
+        })
+        .then(response => response.json())
+        .then(responsejson => {
+          this.props.cardsAction(responsejson)
+          this.props.setNewCardModalOpen(false)
+        })
+    : console.log("nope")
   }
 
   render(){
-    console.log(this.props.navigation.goBack)
     return(
       <ScrollView>
         <View style = {styles.container}>
