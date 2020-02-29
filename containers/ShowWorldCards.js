@@ -6,14 +6,13 @@ import NewCardForm from '../shared/NewOrEditCardForm'
 import {connect} from 'react-redux'
 import actions from '../src/actions'
 
-const {cardsActions: {removeCardFromCardsAction, addCardToCardsAction}} = actions
+const {cardsActions: {removeCardFromCardsAction, addCardToCardsAction, updateCardInCardsAction}} = actions
+const {selectedCardActions: {setSelectedCardAction}} = actions
 
 function ShowWorldCards(props){
-
-  const {cards} = props
+  const {cards, selectedCard} = props
 
   const [modalOpen, setModalOpen] = useState(false)
-  const [selectedCard, setSelectedCard] = useState([])
   const [newCardModalOpen, setNewCardModalOpen] = useState(false)
 
   const id = props.route.params.worldId
@@ -24,20 +23,17 @@ function ShowWorldCards(props){
     })
   }
 
-  const setSelectedCardFromModal = (id) => {
-    const newSelectedCard = props.route.params.cards.filter(card => {
-      return card.id === id
-    })
-    setSelectedCard(newSelectedCard[0])  
-  }
-
   return(
     <View style={styles.container}>
       <Modal visible={modalOpen} animationType='slide'>
         <View style={styles.infoScreen}>
           <ScrollView>
             <View style = {styles.scroll}>
-              <Button title='Close' onPress={()=>{setModalOpen(false)}}></Button>
+              <Button title='Close' onPress={()=>{
+                setModalOpen(false)
+                props.removeSelectedCard()
+              }}>
+              </Button>
               <Text style = {styles.title}>{selectedCard.name}</Text>
               <Image 
                 style={{width: 250, height: 250, resizeMode: 'center'}}
@@ -45,7 +41,10 @@ function ShowWorldCards(props){
               </Image>
               <Text style = {styles.short_description}>{selectedCard.short_description}</Text>
               <Text>{selectedCard.text}</Text>
-              <Button title='Edit'></Button>
+              <Button 
+                title='Edit'
+                onPress={() => setNewCardModalOpen(true) }>
+              </Button>
             </View>
           </ScrollView>
         </View>
@@ -56,7 +55,7 @@ function ShowWorldCards(props){
               data={selectedCard.parentCards}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={()=> {
-                  setSelectedCardFromModal(item.id)
+                  props.setSelectedCard(item.id)
                   }}>
                   <Card>
                     <Text>{item.name}</Text>
@@ -70,7 +69,7 @@ function ShowWorldCards(props){
               data={selectedCard.childCards}
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={()=> {
-                  setSelectedCardFromModal(item.id)
+                  props.setSelectedCard(item.id)
                   }}>
                   <Card>
                     <Text>{item.name}</Text>
@@ -105,7 +104,7 @@ function ShowWorldCards(props){
             <TouchableOpacity 
               onPress={()=> {
                 setModalOpen(true)
-                setSelectedCard(item)
+                props.setSelectedCard(item)
                 }}
               onLongPress={() => 
                 Alert.alert("Delete This World?",
@@ -135,11 +134,15 @@ function ShowWorldCards(props){
 
 const mapDispatchToProps = (dispatch) => ({
   removeCardFromCards: (card) => dispatch(removeCardFromCardsAction(card)),
-  addCardToCards: (card) => dispatch(addCardToCardsAction(card))
+  addCardToCards: (card) => dispatch(addCardToCardsAction(card)),
+  setSelectedCard: (card) => dispatch(setSelectedCardAction(card)),
+  removeSelectedCard: () => dispatch({type: "REMOVE_SELECTED_CARD"}),
+  updateCardInCards: (card) => dispatch(updateCardInCardsAction(card))
 })
 
 const mapStateToProps = (state) => ({
-  cards: state.cards
+  cards: state.cards,
+  selectedCard: state.selectedCard
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(ShowWorldCards)

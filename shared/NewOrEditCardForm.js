@@ -41,6 +41,7 @@ const formStyles = {
       fontWeight: '600',
       flexShrink: .8,
       textAlign: 'center',
+
     }
   }
 }
@@ -94,25 +95,51 @@ export default class NewOrEditCardForm extends Component{
   handleSubmit = () => {
     const value = this.refs.form.getValue();
     
-    value
-    ? fetch(`http://${URL}/cards#campaign_cards`, {
-          method: "POST",
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            authorization: `bearer ${this.props.token}`
-          },
-          body: JSON.stringify({card:{...value, campaign_id: this.props.id}})
-        })
-        .then(response => response.json())
-        .then(responsejson => {
-          this.props.cardsAction(responsejson)
-          this.props.setNewCardModalOpen(false)
-        })
+    value 
+      ? this.props.selectedCard
+          ? fetch(`http:/${URL}/update_card`,{
+              method: "PATCH",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+              authorization: `bearer ${this.props.token}`
+              },
+              body: JSON.stringify({card: {...value, id: this.props.selectedCard.id}})
+            })
+            .then(response => response.json())
+            .then(responsejson => {
+              this.props.updateCardInCards(responsejson)
+              this.props.setNewCardModalOpen(false)
+            })
+          
+
+          : fetch(`http://${URL}/cards#campaign_cards`, {
+              method: "POST",
+              headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                authorization: `bearer ${this.props.token}`
+              },
+              body: JSON.stringify({card:{...value, campaign_id: this.props.id}})
+            })
+            .then(response => response.json())
+            .then(responsejson => {
+              this.props.cardsAction(responsejson)
+              this.props.setNewCardModalOpen(false)
+            })
     : console.log("nope")
   }
 
+
   render(){
+
+    const value = {
+      name: this.props.selectedCard.name,
+      image: this.props.selectedCard.image,
+      short_description: this.props.selectedCard.short_description,
+      text: this.props.selectedCard.text
+    }
+
     return(
       <ScrollView>
         <View style = {styles.container}>
@@ -122,6 +149,7 @@ export default class NewOrEditCardForm extends Component{
           <Form 
               ref="form"
               options={options}
+              value={value}
               type={User} />
             <View style={styles.buttonsContainer}>
               <Button style={styles.button}

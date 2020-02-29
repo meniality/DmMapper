@@ -4,8 +4,11 @@ const removeCardFromCardsAction = (card) => ({type: "REMOVE_CARD_FROM_CARDS", ca
 
 const addCardToCardsAction = (card) => ({type: "ADD_CARDS_TO_CARDS", card})
 
+const updateCardInCardsAction = (card) => ({type: "UPDATE_CARD_IN_CARDS", card})
+
 export const cardsActions = {
   setInitialCardsAction,
   removeCardFromCardsAction,
-  addCardToCardsAction
+  addCardToCardsAction,
+  updateCardInCardsAction
 }
