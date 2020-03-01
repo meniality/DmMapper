@@ -94,45 +94,51 @@ const options = {
 export default class NewOrEditCardForm extends Component{
   handleSubmit = () => {
     const value = this.refs.form.getValue();
-    
+    const cardId = this.props.selectedCard.id
     value 
-      ? this.props.selectedCard
-          ? fetch(`http:/${URL}/update_card`,{
-              method: "PATCH",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-              authorization: `bearer ${this.props.token}`
-              },
-              body: JSON.stringify({card: {...value, id: this.props.selectedCard.id}})
-            })
-            .then(response => response.json())
-            .then(responsejson => {
-              this.props.updateCardInCards(responsejson)
-              this.props.setNewCardModalOpen(false)
-            })
-          
+      ? this.props.selectedCard.name
+        ? fetch(`http:/${URL}/update_card`,{
+            method: "PATCH",
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+            authorization: `bearer ${this.props.token}`
+            },
+            body: JSON.stringify({card: {...value, id: cardId}})
+          })
+          .then(response => response.json())
+          .then(responsejson => {
+            this.props.updateCardInCards(responsejson)
+            this.props.setSelectedCard(this.findCardObject(cardId))
+            this.props.setNewCardModalOpen(false)
+          })
+        
 
-          : fetch(`http://${URL}/cards#campaign_cards`, {
-              method: "POST",
-              headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                authorization: `bearer ${this.props.token}`
-              },
-              body: JSON.stringify({card:{...value, campaign_id: this.props.id}})
-            })
-            .then(response => response.json())
-            .then(responsejson => {
-              this.props.cardsAction(responsejson)
-              this.props.setNewCardModalOpen(false)
-            })
-    : console.log("nope")
+        : fetch(`http://${URL}/cards#campaign_cards`, {
+            method: "POST",
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json',
+              authorization: `bearer ${this.props.token}`
+            },
+            body: JSON.stringify({card:{...value, campaign_id: this.props.world_id}})
+          })
+          .then(response => response.json())
+          .then(responsejson => {
+            this.props.cardsAction(responsejson)
+            this.props.setNewCardModalOpen(false)
+          })
+      : console.log("nope")
   }
 
+  findCardObject = (id) => {
+    const newSecetedCard = this.props.cards.filter(card => {
+      return card.id === id
+    })
+    return newSecetedCard[0]
+  }
 
   render(){
-
     const value = {
       name: this.props.selectedCard.name,
       image: this.props.selectedCard.image,

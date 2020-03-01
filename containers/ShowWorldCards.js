@@ -1,8 +1,10 @@
 import React, {useState} from 'react'
 import {StyleSheet, Text, View, Button, FlatList, TouchableOpacity, Modal, Image, Alert} from 'react-native'
 import Card from '../shared/Card'
+import AddRelationshipButton from '../componets/AddRelationshipButton'
 import { ScrollView } from 'react-native-gesture-handler'
-import NewCardForm from '../shared/NewOrEditCardForm'
+import NewOrEditCardForm from '../shared/NewOrEditCardForm'
+import AddNewRelationshipModal from '../shared/AddNewRelationshipModal'
 import {connect} from 'react-redux'
 import actions from '../src/actions'
 
@@ -14,13 +16,22 @@ function ShowWorldCards(props){
 
   const [modalOpen, setModalOpen] = useState(false)
   const [newCardModalOpen, setNewCardModalOpen] = useState(false)
+  const [addRelationshipModalOpen, setAddRelationshipModalOpen] = useState(false)
+  const [relationshipType, setRelationshipType] = useState("")
 
-  const id = props.route.params.worldId
+  const world_id = props.route.params.worldId
   
   const worldCards = () => {
     return cards.filter(card => {
-      return card.campaign_id === id
+      return card.campaign_id === world_id
     })
+  }
+
+  const findCardObject = (id) => {
+    const newSecetedCard = cards.filter(card => {
+      return card.id === id
+    })
+    return newSecetedCard[0]
   }
 
   return(
@@ -34,12 +45,12 @@ function ShowWorldCards(props){
                 props.removeSelectedCard()
               }}>
               </Button>
-              <Text style = {styles.title}>{selectedCard.name}</Text>
+              <Text style = {styles.title}>{props.selectedCard.name}</Text>
               <Image 
                 style={{width: 250, height: 250, resizeMode: 'center'}}
-                source={{uri: selectedCard.image}}> 
+                source={{uri: props.selectedCard.image}}> 
               </Image>
-              <Text style = {styles.short_description}>{selectedCard.short_description}</Text>
+              <Text style = {styles.short_description}>{props.selectedCard.short_description}</Text>
               <Text>{selectedCard.text}</Text>
               <Button 
                 title='Edit'
@@ -53,9 +64,17 @@ function ShowWorldCards(props){
             <FlatList
               horizontal={true}
               data={selectedCard.parentCards}
+              ListFooterComponent={
+                <TouchableOpacity onPress={()=>{
+                  setRelationshipType("Parent")
+                  setAddRelationshipModalOpen(true)
+                }}>
+                  <AddRelationshipButton />
+                </TouchableOpacity>
+              }
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={()=> {
-                  props.setSelectedCard(item.id)
+                  props.setSelectedCard(findCardObject(item.id))
                   }}>
                   <Card>
                     <Text>{item.name}</Text>
@@ -67,9 +86,17 @@ function ShowWorldCards(props){
             <FlatList
               horizontal={true}
               data={selectedCard.childCards}
+              ListFooterComponent={
+                <TouchableOpacity onPress={()=>{
+                  setAddRelationshipModalOpen(true)
+                  setRelationshipType("Child")
+                }}>
+                  <AddRelationshipButton />
+                </TouchableOpacity>
+                  }
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={()=> {
-                  props.setSelectedCard(item.id)
+                  props.setSelectedCard(findCardObject(item.id))
                   }}>
                   <Card>
                     <Text>{item.name}</Text>
@@ -82,22 +109,26 @@ function ShowWorldCards(props){
 
 
         <Modal visible={newCardModalOpen} animationType='slide'>
-          <NewCardForm 
+          <NewOrEditCardForm 
             {...props}
             token = {props.token} 
-            id = {id}
+            world_id = {world_id}
             setNewCardModalOpen={setNewCardModalOpen} 
             cardsAction={props.addCardToCards}
           />
-        </Modal>               
+        </Modal>   
 
-        <TouchableOpacity onPress={() => setNewCardModalOpen(true)}>
-          <Card>
-            <View style={styles.addButtonView}>
-              <Image style={styles.image}source={require('../images/AddButton.png')}/>
-            </View>
-          </Card>
-        </TouchableOpacity>   
+        <Modal visible={addRelationshipModalOpen} animationType='slide'>
+          <AddNewRelationshipModal 
+            {...props}
+            token = {props.token} 
+            world_id = {world_id}
+            setAddRelationshipModalOpen={setAddRelationshipModalOpen}
+            relationshipType = {relationshipType} 
+          />
+        </Modal>            
+
+        
         <FlatList
           data={worldCards()}
           renderItem={({ item }) => (
@@ -107,7 +138,7 @@ function ShowWorldCards(props){
                 props.setSelectedCard(item)
                 }}
               onLongPress={() => 
-                Alert.alert("Delete This World?",
+                Alert.alert("Delete This Card?",
                   "are you sure?",
                 [
                   {
@@ -121,13 +152,19 @@ function ShowWorldCards(props){
                 ]
               )}
             >
-            <Card>
-              <Text>{item.name}</Text>
-            </Card>
-          </TouchableOpacity>
-        )}
-      />
-  
+              <Card>
+                <Text>{item.name}</Text>
+              </Card>
+            </TouchableOpacity>
+          )}
+        />
+        <TouchableOpacity onPress={() => setNewCardModalOpen(true)}>
+          <Card>
+            <View style={styles.addButtonView}>
+              <Image style={styles.image}source={require('../images/AddButton.png')}/>
+            </View>
+          </Card>
+        </TouchableOpacity>   
     </View>
   )
 }

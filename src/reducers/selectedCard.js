@@ -1,4 +1,4 @@
-export const selectedCard = (state=[], action) => {
+export const selectedCard = (state={}, action) => {
   switch(action.type){
     case "REMOVE_SELECTED_CARD":
       return {}
