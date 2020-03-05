@@ -43,7 +43,8 @@ const options = {
       error: 'You need to enter a username'
     },
     password: {
-      error: 'You need to enter a password'
+      error: 'You need to enter a password',
+      secureTextEntry: true
     },
   },
   stylesheet: formStyles
