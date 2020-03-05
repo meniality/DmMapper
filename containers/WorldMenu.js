@@ -10,10 +10,10 @@ export default function WorldMenu(props) {
     <View style={styles.container}>
       <Text style={styles.text}>{props.route.params.item.name}</Text>
         <View style={styles.buttonContainer}>
-        <Button
+        {/* <Button
           title="World Map"
           
-        />
+        /> */}
         <Button
           title="Show World Cards"
           onPress = {() => {props.navigation.navigate('Show World Cards', {

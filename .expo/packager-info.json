@@ -1,10 +1,10 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": null,
-  "packagerPort": null,
-  "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null,
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 33227,
+  "expoServerNgrokUrl": "https://zp-mh9.anonymous.dmmapperfrontend.exp.direct",
+  "packagerNgrokUrl": "https://packager.zp-mh9.anonymous.dmmapperfrontend.exp.direct",
+  "ngrokPid": 33241,
   "webpackServerPort": null
 }
