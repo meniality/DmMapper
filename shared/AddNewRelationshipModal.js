@@ -32,7 +32,7 @@ export default function AddNewRelationshipModal(props){
         ? choosenCardId
         : props.selectedCard.id
 
-    fetch(`http://${URL}/card_relationships`, {
+    fetch(`${URL}/card_relationships`, {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   flatlist:{
-    alignSelf: "stretch"
+    alignSelf: "stretch",
+    marginBottom:150
   }
 })

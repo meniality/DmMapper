@@ -55,7 +55,7 @@ export default class CreateNewUser extends Component{
   handleSubmit = () => {
     const value = this.refs.form.getValue();
     if (value && value.password == value.verifyPassword){
-      fetch(`http://${URL}/users`, {
+      fetch(`${URL}/users`, {
         method: "POST",
         headers: {
           'Accept': 'application/json',

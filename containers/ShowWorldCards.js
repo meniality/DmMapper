@@ -6,6 +6,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 import NewOrEditCardForm from '../shared/NewOrEditCardForm'
 import AddNewRelationshipModal from '../shared/AddNewRelationshipModal'
 import {connect} from 'react-redux'
+import { SearchBar } from 'react-native-elements'
 import actions from '../src/actions'
 import {URL} from '../shared/BackendURL'
 
@@ -20,6 +21,7 @@ const {selectedCardActions: {setSelectedCardAction}} = actions
 function ShowWorldCards(props){
   const {cards, selectedCard} = props
 
+  const [search, setSearch] = useState("")
   const [modalOpen, setModalOpen] = useState(false)
   const [newCardModalOpen, setNewCardModalOpen] = useState(false)
   const [addRelationshipModalOpen, setAddRelationshipModalOpen] = useState(false)
@@ -30,6 +32,12 @@ function ShowWorldCards(props){
   const worldCards = () => {
     return cards.filter(card => {
       return card.campaign_id === world_id
+    })
+  }
+  
+  const searchCards = () => {
+    return worldCards().filter(card => {
+      return card.name.includes(search)
     })
   }
 
@@ -50,7 +58,7 @@ function ShowWorldCards(props){
         ? selectedCard.id
         : childId
 
-    fetch(`http://${URL}/destroy_relationship`, {
+    fetch(`${URL}/destroy_relationship`, {
       method: "POST",
       headers: {
         'Accept': 'application/json',
@@ -189,9 +197,13 @@ function ShowWorldCards(props){
           />
         </Modal>            
 
-        
+        <SearchBar
+          placeholder="Type Here..."
+          onChangeText={setSearch}
+          value = {search}
+        />
         <FlatList
-          data={worldCards()}
+          data={searchCards()}
           renderItem={({ item }) => (
             <TouchableOpacity 
               onPress={()=> {

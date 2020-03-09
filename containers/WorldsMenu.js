@@ -13,7 +13,7 @@ function WorldsMenu(props){
   const {worlds} = props 
 
   const removeCardFromDatabase = (cardId) => {
-    fetch(`http://${URL}/cards/${cardId}`,{
+    fetch(`${URL}/cards/${cardId}`,{
       method: 'DELETE',
       headers: {
         authorization: `bearer ${props.token}`
@@ -22,7 +22,7 @@ function WorldsMenu(props){
   }
 
   const removeWorldFromDatabase = (campaignId) => {
-    fetch(`http://${URL}/campaigns/${campaignId}`,{
+    fetch(`${URL}/campaigns/${campaignId}`,{
       method: 'DELETE',
       headers: {
         authorization: `bearer ${props.token}`
@@ -31,7 +31,7 @@ function WorldsMenu(props){
   }
 
   useEffect(() => {
-    fetch(`http://${URL}/campaigns`, {
+    fetch(`${URL}/campaigns`, {
       method: "get",
       headers: {
         'Accept': 'application/json',
@@ -45,7 +45,7 @@ function WorldsMenu(props){
       
     })
 
-    fetch(`http://${URL}/cards`, {
+    fetch(`${URL}/cards`, {
       method: "get",
       headers: {
         'Accept': 'application/json',

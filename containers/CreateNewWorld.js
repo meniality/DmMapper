@@ -55,7 +55,7 @@ function CreateNewWorld(props) {
     const value = formdata.current.getValue();
 
     value
-      ? fetch(`http://${URL}/campaigns`, {
+      ? fetch(`${URL}/campaigns`, {
           method: "POST",
           headers: {
             'Accept': 'application/json',

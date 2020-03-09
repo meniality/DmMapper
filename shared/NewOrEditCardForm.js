@@ -97,7 +97,7 @@ export default class NewOrEditCardForm extends Component{
     const cardId = this.props.selectedCard.id
     value 
       ? this.props.selectedCard.name
-        ? fetch(`http:/${URL}/update_card`,{
+        ? fetch(`${URL}/update_card`,{
             method: "PATCH",
             headers: {
               'Accept': 'application/json',
@@ -114,7 +114,7 @@ export default class NewOrEditCardForm extends Component{
           })
         
 
-        : fetch(`http://${URL}/cards#campaign_cards`, {
+        : fetch(`${URL}/cards#campaign_cards`, {
             method: "POST",
             headers: {
               'Accept': 'application/json',

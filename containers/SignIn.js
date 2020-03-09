@@ -53,7 +53,7 @@ const options = {
 class SignIn extends Component {
   handleSubmit = () => {
     const value = this.refs.form.getValue();
-    fetch(`http://${URL}/login`, {
+    fetch(`${URL}/login`, {
       method: "POST",
       headers: {
         'Accept': 'application/json',
