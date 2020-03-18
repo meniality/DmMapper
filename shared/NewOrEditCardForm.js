@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import {StyleSheet, View, Button, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
+import {StyleSheet, View, Button, Image, ScrollView} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import t from 'tcomb-form-native';
 import {URL} from '../shared/BackendURL'
 
@@ -30,7 +31,6 @@ const formStyles = {
       fontSize: 18,
       marginBottom: 7,
       fontWeight: '600',
-      width: 300,
       textAlign: 'center',
     },
     error: {
@@ -66,7 +66,6 @@ const options = {
               fontSize: 18,
               marginBottom: 7,
               fontWeight: '600',
-              width: 300,
               textAlign: 'center',
             },
           },
@@ -146,17 +145,21 @@ export default class NewOrEditCardForm extends Component{
       text: this.props.selectedCard.text
     }
 
-    return(
+    return(  
       <ScrollView>
         <View style = {styles.container}>
-          <View style={styles.closeButton}>
-            <Button title='Close' onPress={()=>{this.props.setNewCardModalOpen(false)}}></Button>
+          <View style={styles.closeAndFavorite}>
+            <View style={styles.closeButton}>
+              <Button title='Close' onPress={()=>{this.props.setNewCardModalOpen(false)}}></Button>
+            </View>
+            <Icon style={styles.favoriteIcon} name ="star-o" size={40} color="#ffd700" />
           </View>
           <Form 
-              ref="form"
-              options={options}
-              value={value}
-              type={User} />
+            ref="form"
+            options={options}
+            value={value}
+            type={User} 
+          />
             <View style={styles.buttonsContainer}>
               <Button style={styles.button}
                 title="Submit"
@@ -171,15 +174,26 @@ export default class NewOrEditCardForm extends Component{
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
+    paddingTop: 10,
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#fffaf0',
     height: 1300,
     overflow: 'scroll',
   },
-  closeButton: {
-    height: 60
+  closeAndFavorite: {
+    height: 60,
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+  },
+  closeButton:{
+    justifyContent: 'center',
+  },
+  favoriteIcon: {
+    position: 'absolute',
+    alignSelf: 'center',
+    right: 10
   },
   buttonsContainer:{
     justifyContent: 'center',
