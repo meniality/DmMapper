@@ -95,6 +95,11 @@ const options = {
 };
 
 export default class NewOrEditCardForm extends Component{
+
+  state = {
+    favoriteIconType: ""
+  }
+
   handleSubmit = () => {
     const value = this.refs.form.getValue();
     const cardId = this.props.selectedCard.id
@@ -135,22 +140,6 @@ export default class NewOrEditCardForm extends Component{
 
   handleStarSubmit = () => {
    this.props.updateFavorite(this.props.selectedCard)
-    // const value = this.refs.form.getValue();
-    // const cardId = this.props.selectedCard.id
-    // fetch(`${URL}/update_card`,{
-    //   method: "PATCH",
-    //   headers: {
-    //     'Accept': 'application/json',
-    //     'Content-Type': 'application/json',
-    //   authorization: `bearer ${this.props.token}`
-    //   },
-    //   body: JSON.stringify({card: {...value, id: cardId}})
-    // })
-    // .then(response => response.json())
-    // .then(responsejson => {
-    //   this.props.updateCardInCards(responsejson)
-    //   this.props.setSelectedCard(this.findCardObject(cardId))
-    // })
   }
 
   findCardObject = (id) => {
@@ -161,12 +150,22 @@ export default class NewOrEditCardForm extends Component{
   }
 
   isCardFavorite = () => {
-    return this.props.selectedCard.favorite
-      ? "star"
-      : "star-o"
+    this.props.selectedCard.favorite
+      ? this.setState({favoriteIconType: "star"})
+      : this.setState({favoriteIconType: "star-o"})
   }
 
-
+  setFavoriteIcon = () => {
+    if (this.state.favoriteIconType == "star-o"){
+      return this.setState({favoriteIconType: "star"})
+    }
+    else {
+      this.setState({favoriteIconType: "star-o"})
+    }
+  }
+  componentDidMount(){
+    this.isCardFavorite()
+  }
 
   render(){
     const value = {
@@ -186,9 +185,12 @@ export default class NewOrEditCardForm extends Component{
             </View>
             <TouchableOpacity 
               style={styles.favoriteIcon}
-              onPress = {this.handleStarSubmit}
+              onPress = {() => {
+                this.handleStarSubmit()
+                this.setFavoriteIcon()
+              }}
             >
-              <Icon name = {this.isCardFavorite()} size={40} color="#ffd700" />
+              <Icon name = {this.state.favoriteIconType} size={40} color="#ffd700" />
             </TouchableOpacity>
           </View>
           <Form 
