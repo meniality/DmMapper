@@ -63,6 +63,7 @@ export const cards = (state=[], action) => {
       updatedCard.image = action.card.image
       updatedCard.short_description = action.card.short_description
       updatedCard.text = action.card.text
+      updatedCard.favorite = action.card.favorite
       return [...filteredCards, updatedCard]
     case "ADD_CARDS_TO_CARDS":
       return [...state, action.card]

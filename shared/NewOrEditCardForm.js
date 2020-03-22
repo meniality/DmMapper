@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {StyleSheet, View, Button, Image, ScrollView} from 'react-native';
+import {StyleSheet, View, Button, TouchableOpacity, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import t from 'tcomb-form-native';
 import {URL} from '../shared/BackendURL'
@@ -11,6 +11,7 @@ const User = t.struct({
   image: t.maybe(t.String),
   short_description: t.maybe(t.String),
   text: t.maybe(t.String),
+  favorite: t.Boolean
 });
 
 const formStyles = {
@@ -82,10 +83,13 @@ const options = {
               }
           }
       }
-  },
+    },
     short_description: {
       label: "Short Description"
     },
+    favorite: {
+      hidden: true,
+    }
   },
   stylesheet: formStyles
 };
@@ -111,7 +115,6 @@ export default class NewOrEditCardForm extends Component{
             this.props.setSelectedCard(this.findCardObject(cardId))
             this.props.setNewCardModalOpen(false)
           })
-        
 
         : fetch(`${URL}/cards#campaign_cards`, {
             method: "POST",
@@ -130,6 +133,26 @@ export default class NewOrEditCardForm extends Component{
       : console.log("nope")
   }
 
+  handleStarSubmit = () => {
+   this.props.updateFavorite(this.props.selectedCard)
+    // const value = this.refs.form.getValue();
+    // const cardId = this.props.selectedCard.id
+    // fetch(`${URL}/update_card`,{
+    //   method: "PATCH",
+    //   headers: {
+    //     'Accept': 'application/json',
+    //     'Content-Type': 'application/json',
+    //   authorization: `bearer ${this.props.token}`
+    //   },
+    //   body: JSON.stringify({card: {...value, id: cardId}})
+    // })
+    // .then(response => response.json())
+    // .then(responsejson => {
+    //   this.props.updateCardInCards(responsejson)
+    //   this.props.setSelectedCard(this.findCardObject(cardId))
+    // })
+  }
+
   findCardObject = (id) => {
     const newSecetedCard = this.props.cards.filter(card => {
       return card.id === id
@@ -137,12 +160,21 @@ export default class NewOrEditCardForm extends Component{
     return newSecetedCard[0]
   }
 
+  isCardFavorite = () => {
+    return this.props.selectedCard.favorite
+      ? "star"
+      : "star-o"
+  }
+
+
+
   render(){
     const value = {
       name: this.props.selectedCard.name,
       image: this.props.selectedCard.image,
       short_description: this.props.selectedCard.short_description,
-      text: this.props.selectedCard.text
+      text: this.props.selectedCard.text,
+      favorite: this.props.selectedCard.favorite
     }
 
     return(  
@@ -152,7 +184,12 @@ export default class NewOrEditCardForm extends Component{
             <View style={styles.closeButton}>
               <Button title='Close' onPress={()=>{this.props.setNewCardModalOpen(false)}}></Button>
             </View>
-            <Icon style={styles.favoriteIcon} name ="star-o" size={40} color="#ffd700" />
+            <TouchableOpacity 
+              style={styles.favoriteIcon}
+              onPress = {this.handleStarSubmit}
+            >
+              <Icon name = {this.isCardFavorite()} size={40} color="#ffd700" />
+            </TouchableOpacity>
           </View>
           <Form 
             ref="form"
