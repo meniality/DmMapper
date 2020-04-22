@@ -9,6 +9,7 @@ import {connect} from 'react-redux'
 import { SearchBar } from 'react-native-elements'
 import actions from '../src/actions'
 import {URL} from '../shared/BackendURL'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const {cardsActions: {removeCardFromCardsAction, 
                       addCardToCardsAction, 
@@ -46,6 +47,12 @@ function ShowWorldCards(props){
       return card.id === id
     })
     return newSecetedCard[0]
+  }
+
+  const determineFavorite = () => {
+    return selectedCard.favorite
+      ? "star"
+      : "star-o"
   }
 
   const removeRelationshipFetch = (parentId, childId) => {
@@ -228,6 +235,7 @@ function ShowWorldCards(props){
             >
               <Card>
                 <Text>{item.name}</Text>
+                <Icon name = {determineFavorite()} size={40} color="#ffd700" />
               </Card>
             </TouchableOpacity>
           )}
