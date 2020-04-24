@@ -11,7 +11,6 @@ const User = t.struct({
   image: t.maybe(t.String),
   short_description: t.maybe(t.String),
   text: t.maybe(t.String),
-  favorite: t.Boolean
 });
 
 const formStyles = {
@@ -100,9 +99,16 @@ export default class NewOrEditCardForm extends Component{
     favoriteIconType: ""
   }
 
+  favorite = () => {
+    return this.state.favoriteIconType == "star-o"
+      ? false
+      : true
+  }
+
   handleSubmit = () => {
     const value = this.refs.form.getValue();
     const cardId = this.props.selectedCard.id
+    console.log(value)
     value 
       ? this.props.selectedCard.name
         ? fetch(`${URL}/update_card`,{
@@ -112,7 +118,7 @@ export default class NewOrEditCardForm extends Component{
               'Content-Type': 'application/json',
             authorization: `bearer ${this.props.token}`
             },
-            body: JSON.stringify({card: {...value, id: cardId}})
+            body: JSON.stringify({card: {...value, favorite: this.favorite(), id: cardId}})
           })
           .then(response => response.json())
           .then(responsejson => {
@@ -139,7 +145,13 @@ export default class NewOrEditCardForm extends Component{
   }
 
   handleStarSubmit = () => {
-   this.props.updateFavorite(this.props.selectedCard)
+    // this.props.updateFavorite(this.props.selectedCard)
+    if (this.state.favoriteIconType == "star-o"){
+      return this.setState({favoriteIconType: "star"})
+    }
+    else {
+      this.setState({favoriteIconType: "star-o"})
+    }
   }
 
   findCardObject = (id) => {
@@ -186,6 +198,7 @@ export default class NewOrEditCardForm extends Component{
             <TouchableOpacity 
               style={styles.favoriteIcon}
               onPress = {() => {
+                value.favorite=!value.favorite
                 this.handleStarSubmit()
                 this.setFavoriteIcon()
               }}
