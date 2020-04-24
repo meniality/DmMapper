@@ -49,8 +49,8 @@ function ShowWorldCards(props){
     return newSecetedCard[0]
   }
 
-  const determineFavorite = () => {
-    return selectedCard.favorite
+  const determineFavorite = (item) => {
+    return item.favorite
       ? "star"
       : "star-o"
   }
@@ -235,7 +235,7 @@ function ShowWorldCards(props){
             >
               <Card>
                 <Text>{item.name}</Text>
-                <Icon name = {determineFavorite()} size={40} color="#ffd700" />
+                <Icon name = {determineFavorite(item)} size={40} color="#ffd700" />
               </Card>
             </TouchableOpacity>
           )}
