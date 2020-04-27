@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
-import { Platform, StyleSheet, Text, View, Image, Button } from 'react-native';
+import React, { Component} from 'react'
+import {StyleSheet, Text, View, Image, Button, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
 import Logo from '../images/DMMapperLogo.png'
 import t from 'tcomb-form-native';
+import { URL } from '../shared/BackendURL'
 
 const Form = t.form.Form;
 
@@ -17,7 +18,9 @@ const formStyles = {
       color: 'green',
       fontSize: 18,
       marginBottom: 7,
-      fontWeight: '600'
+      fontWeight: '600',
+      width: 200,
+      textAlign: 'center'
     },
     error: {
       color: 'red',
@@ -46,44 +49,63 @@ const options = {
   stylesheet: formStyles
 };
 
-
-
 class SignIn extends Component {
-
   handleSubmit = () => {
-    const value = this._form.getValue(); // use that ref to get the form value
-    console.log('value: ', value);
+    const value = this.refs.form.getValue();
+    fetch(`http://${URL}/login`, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(value)
+    })
+    .then(response => response.json())
+    .then(responsejson => {
+      this.props.setUsername(responsejson.username)
+      this.props.setToken(responsejson.token)
+      if (responsejson.token){
+         this.props.navigation.navigate('MainMenu')}
+    })
+    .catch(function(error) {
+      console.log('There has been a problem with your fetch operation: ' + error.message);
+        throw error
+    })
   }
 
   render(){
     return(
-      <View style = {styles.container}>
-        <Image
-          style = {{width: 300, height: 100}}
-          source = {Logo}
-        />
-        <Text style = {styles.text}>
-          Welcome to the Dm Mapper, {"\n"} 
-        a tool to help create a manage your {"\n"}
-        fantasy world! Sign in to begin your {"\n"}
-        journey!
-        </Text>
+      <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+        <ScrollView>
+          <View style = {styles.container}>
+            <Image
+              style = {{width: 300, height: 100}}
+              source = {Logo}
+            />
+            <Text style = {styles.text}>
+              Welcome to the Dm Mapper, {"\n"} 
+              a tool to help create and manage your {"\n"}
+              fantasy world! Sign in to begin your {"\n"}
+              journey!
+            </Text>
 
-        <Form 
-          ref={c => this._form = c}
-          options={options}
-          type={User} />
-        <View style={styles.buttons}>
-          <Button
-            title="Sign In!"
-            onPress={this.handleSubmit}
-          />
-          <Button
-            title="Sign Up!"
-            onPress={this.handleSubmit}
-          />
-        </View>
-      </View>
+            <Form 
+              ref="form"
+              options={options}
+              type={User} />
+            <View style={styles.buttonsContainer}>
+              <Button style={styles.button}
+                title="Sign In!"
+                onPress={this.handleSubmit}
+              />
+              <Button style={styles.button}
+                title="Sign Up!"
+                onPress={() => {this.props.navigation.navigate('Create New User')}}
+              />
+            </View>
+          </View>
+        </ScrollView>
+      </TouchableWithoutFeedback>
     )
   }
 }
@@ -92,14 +114,21 @@ const styles = StyleSheet.create({
   container: {
     paddingTop: 20,
     flex: 1,
-    // alignItems: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fffaf0',
+    height: 800
   },
   text: {
     textAlign: "center",
+    marginBottom: 20,
   },
-  buttons:{
+  buttonsContainer:{
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    width: 200,
+  },
+  button: {
+    marginLeft: 30,
   }
 })
 
