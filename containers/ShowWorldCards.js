@@ -37,9 +37,17 @@ function ShowWorldCards(props){
   }
   
   const searchCards = () => {
-    return worldCards().filter(card => {
-      return card.name.includes(search)
+    const favoriteCards = worldCards().filter(card => {
+      return card.favorite == true && card.name.includes(search)
     })
+    const nonFavoriteCards = worldCards().filter(card => {
+      return card.favorite == false && card.name.includes(search)
+    })
+
+    favoriteCards.sort((a, b) => a.name.localeCompare(b.name))
+    nonFavoriteCards.sort((a, b) => a.name.localeCompare(b.name))
+    
+    return favoriteCards.concat(nonFavoriteCards)
   }
 
   const findCardObject = (id) => {
@@ -73,6 +81,28 @@ function ShowWorldCards(props){
       authorization: `bearer ${props.token}`,
       },
       body: JSON.stringify({"card_relationships":{child_card_id, parent_card_id}})
+    })
+  }
+
+  const prepToUpdateItem = (card) => {
+    // const updatedCard = card
+
+    // updatedCard.favorite = !updatedCard.favorite
+
+    // props.updateCardInCards(updatedCard)
+
+    fetch(`${URL}/update_card`,{
+      method: "PATCH",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      authorization: `bearer ${props.token}`
+      },
+      body: JSON.stringify({card: {id: card.id, favorite: !card.favorite}})
+    })
+    .then(response => response.json())
+    .then(responsejson => {
+      props.updateCardInCards(responsejson)
     })
   }
 
@@ -206,7 +236,7 @@ function ShowWorldCards(props){
         </Modal>            
 
         <SearchBar
-          placeholder="Type Here..."
+          placeholder="Search for a Card Name..."
           onChangeText={setSearch}
           value = {search}
         />
@@ -234,8 +264,12 @@ function ShowWorldCards(props){
               )}
             >
               <Card>
-                <Text>{item.name}</Text>
-                <Icon name = {determineFavorite(item)} size={40} color="#ffd700" />
+                <View style={styles.cardContainer}>
+                  <Text>{item.name}</Text>
+                  <TouchableOpacity onPress={() => prepToUpdateItem(item)}>
+                    <Icon name = {determineFavorite(item)} size={40} color="#ffd700" />
+                  </TouchableOpacity>
+                </View>
               </Card>
             </TouchableOpacity>
           )}
@@ -310,6 +344,10 @@ const styles = StyleSheet.create({
   cardLabels:{
     fontSize:20,
   },
+  cardContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
   addButtonView:{
     justifyContent: 'center',
     alignItems: 'center',
@@ -318,6 +356,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
+
   footer:{
     height: 40
   }

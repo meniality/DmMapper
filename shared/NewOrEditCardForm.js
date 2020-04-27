@@ -145,7 +145,6 @@ export default class NewOrEditCardForm extends Component{
   }
 
   handleStarSubmit = () => {
-    // this.props.updateFavorite(this.props.selectedCard)
     if (this.state.favoriteIconType == "star-o"){
       return this.setState({favoriteIconType: "star"})
     }
