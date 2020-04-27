@@ -82,6 +82,14 @@ function ShowWorldCards(props){
     })
   }
 
+  const prepToUpdateItem = (card) => {
+    const updatedCard = card
+
+    updatedCard.favorite = !updatedCard.favorite
+
+    props.updateCardInCards(updatedCard)
+  }
+
   return(
     <View style={styles.container}>
       <Modal visible={modalOpen} animationType='slide'>
@@ -242,7 +250,9 @@ function ShowWorldCards(props){
               <Card>
                 <View style={styles.cardContainer}>
                   <Text>{item.name}</Text>
-                  <Icon name = {determineFavorite(item)} size={40} color="#ffd700" />
+                  <TouchableOpacity onPress={() => prepToUpdateItem(item)}>
+                    <Icon name = {determineFavorite(item)} size={40} color="#ffd700" />
+                  </TouchableOpacity>
                 </View>
               </Card>
             </TouchableOpacity>
