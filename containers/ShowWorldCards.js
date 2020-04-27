@@ -44,7 +44,9 @@ function ShowWorldCards(props){
       return card.favorite == false && card.name.includes(search)
     })
 
-
+    favoriteCards.sort((a, b) => a.name.localeCompare(b.name))
+    nonFavoriteCards.sort((a, b) => a.name.localeCompare(b.name))
+    
     return favoriteCards.concat(nonFavoriteCards)
   }
 
@@ -234,7 +236,7 @@ function ShowWorldCards(props){
         </Modal>            
 
         <SearchBar
-          placeholder="Type Here..."
+          placeholder="Search for a Card Name..."
           onChangeText={setSearch}
           value = {search}
         />
