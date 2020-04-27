@@ -83,11 +83,25 @@ function ShowWorldCards(props){
   }
 
   const prepToUpdateItem = (card) => {
-    const updatedCard = card
+    // const updatedCard = card
 
-    updatedCard.favorite = !updatedCard.favorite
+    // updatedCard.favorite = !updatedCard.favorite
 
-    props.updateCardInCards(updatedCard)
+    // props.updateCardInCards(updatedCard)
+
+    fetch(`${URL}/update_card`,{
+      method: "PATCH",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      authorization: `bearer ${props.token}`
+      },
+      body: JSON.stringify({card: {id: card.id, favorite: !card.favorite}})
+    })
+    .then(response => response.json())
+    .then(responsejson => {
+      props.updateCardInCards(responsejson)
+    })
   }
 
   return(
