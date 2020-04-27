@@ -37,9 +37,15 @@ function ShowWorldCards(props){
   }
   
   const searchCards = () => {
-    return worldCards().filter(card => {
-      return card.name.includes(search)
+    const favoriteCards = worldCards().filter(card => {
+      return card.favorite == true && card.name.includes(search)
     })
+    const nonFavoriteCards = worldCards().filter(card => {
+      return card.favorite == false && card.name.includes(search)
+    })
+
+
+    return favoriteCards.concat(nonFavoriteCards)
   }
 
   const findCardObject = (id) => {
@@ -234,8 +240,10 @@ function ShowWorldCards(props){
               )}
             >
               <Card>
-                <Text>{item.name}</Text>
-                <Icon name = {determineFavorite(item)} size={40} color="#ffd700" />
+                <View style={styles.cardContainer}>
+                  <Text>{item.name}</Text>
+                  <Icon name = {determineFavorite(item)} size={40} color="#ffd700" />
+                </View>
               </Card>
             </TouchableOpacity>
           )}
@@ -310,6 +318,10 @@ const styles = StyleSheet.create({
   cardLabels:{
     fontSize:20,
   },
+  cardContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  },
   addButtonView:{
     justifyContent: 'center',
     alignItems: 'center',
@@ -318,6 +330,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
   },
+
   footer:{
     height: 40
   }
