@@ -1,4 +1,4 @@
 import React from 'react'
 
-export const URL= "10.0.0.66:3000"
+export const URL= "https://dm-mapper-backend.herokuapp.com"
 

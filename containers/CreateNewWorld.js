@@ -1,5 +1,5 @@
 import React, { useRef } from 'react'
-import {StyleSheet, Text, View, Button, TouchableWithoutFeedback, Keyboard} from 'react-native';
+import {StyleSheet, Text, View, Button, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
 import t from 'tcomb-form-native';
 import { URL } from '../shared/BackendURL'
 import {connect} from 'react-redux'
@@ -53,37 +53,41 @@ function CreateNewWorld(props) {
 
   const handleSubmit = () => {
     const value = formdata.current.getValue();
-  
-    fetch(`http://${URL}/campaigns`, {
-        method: "POST",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          authorization: `bearer ${props.token}`
-        },
-        body: JSON.stringify({campaign:{...value}})
-      })
-      .then(response => response.json())
-      .then(responsejson => {
-        props.addWorldToWorlds(responsejson)
-        props.navigation.navigate('Worlds Menu')
-      })
+
+    value
+      ? fetch(`${URL}/campaigns`, {
+          method: "POST",
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            authorization: `bearer ${props.token}`
+          },
+          body: JSON.stringify({campaign:{...value}})
+        })
+        .then(response => response.json())
+        .then(responsejson => {
+          props.addWorldToWorlds(responsejson)
+          props.navigation.navigate('Worlds Menu')
+        })
+      : null
   }
   return(
     <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
-      <View style={styles.container}>
-        <Text style={styles.text}>Choose A Name For Your New World</Text>
-        <View style = {styles.form}>
-          <Form
-            ref={formdata}
-            options={options}
-            type={User} />
-            <Button
-              title="Create World"
-              onPress={handleSubmit}
-          />
+      <ScrollView>
+        <View style={styles.container}>
+          <Text style={styles.text}>Choose A Name For Your New World</Text>
+          <View style = {styles.form}>
+            <Form
+              ref={formdata}
+              options={options}
+              type={User} />
+              <Button
+                title="Create World"
+                onPress={handleSubmit}
+            />
+          </View>
         </View>
-      </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
     )
   }
@@ -101,10 +105,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(CreateNewWorld)
 
 const styles = StyleSheet.create({
   container:{
-    justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#fffaf0',
     flex: 1,
+    height: 1000,
+    paddingTop: 200
   },
   text:{
     textAlign: "center",

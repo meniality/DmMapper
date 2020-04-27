@@ -6,14 +6,22 @@ import { ScrollView } from 'react-native-gesture-handler'
 import NewOrEditCardForm from '../shared/NewOrEditCardForm'
 import AddNewRelationshipModal from '../shared/AddNewRelationshipModal'
 import {connect} from 'react-redux'
+import { SearchBar } from 'react-native-elements'
 import actions from '../src/actions'
+import {URL} from '../shared/BackendURL'
 
-const {cardsActions: {removeCardFromCardsAction, addCardToCardsAction, updateCardInCardsAction}} = actions
+const {cardsActions: {removeCardFromCardsAction, 
+                      addCardToCardsAction, 
+                      updateCardInCardsAction, 
+                      addRelationshipAction,
+                      removeRelationshipAction
+                      }} = actions
 const {selectedCardActions: {setSelectedCardAction}} = actions
 
 function ShowWorldCards(props){
   const {cards, selectedCard} = props
 
+  const [search, setSearch] = useState("")
   const [modalOpen, setModalOpen] = useState(false)
   const [newCardModalOpen, setNewCardModalOpen] = useState(false)
   const [addRelationshipModalOpen, setAddRelationshipModalOpen] = useState(false)
@@ -26,12 +34,39 @@ function ShowWorldCards(props){
       return card.campaign_id === world_id
     })
   }
+  
+  const searchCards = () => {
+    return worldCards().filter(card => {
+      return card.name.includes(search)
+    })
+  }
 
   const findCardObject = (id) => {
     const newSecetedCard = cards.filter(card => {
       return card.id === id
     })
     return newSecetedCard[0]
+  }
+
+  const removeRelationshipFetch = (parentId, childId) => {
+    const parent_card_id = 
+      parentId
+        ? parentId
+        : selectedCard.id
+    const child_card_id = 
+      parentId
+        ? selectedCard.id
+        : childId
+
+    fetch(`${URL}/destroy_relationship`, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      authorization: `bearer ${props.token}`,
+      },
+      body: JSON.stringify({"card_relationships":{child_card_id, parent_card_id}})
+    })
   }
 
   return(
@@ -65,17 +100,35 @@ function ShowWorldCards(props){
               horizontal={true}
               data={selectedCard.parentCards}
               ListFooterComponent={
-                <TouchableOpacity onPress={()=>{
-                  setRelationshipType("Parent")
-                  setAddRelationshipModalOpen(true)
-                }}>
+                <TouchableOpacity 
+                  onPress={()=>{
+                    setRelationshipType("Parent")
+                    setAddRelationshipModalOpen(true)
+                  }}
+                >
                   <AddRelationshipButton />
                 </TouchableOpacity>
               }
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={()=> {
-                  props.setSelectedCard(findCardObject(item.id))
-                  }}>
+                <TouchableOpacity 
+                  onPress={()=> {
+                    props.setSelectedCard(findCardObject(item.id))
+                  }}
+                  onLongPress={() => 
+                    Alert.alert("Delete This Relationship?",
+                      "are you sure?",
+                    [
+                      {
+                        text: 'Cancel',
+                        style: 'cancel',
+                      },
+                      {text: 'OK', onPress: () => {
+                        removeRelationshipFetch(item.id, null)
+                        props.removeRelationship(item.id, selectedCard.id)
+                      }},
+                    ]
+                  )}
+                >
                   <Card>
                     <Text>{item.name}</Text>
                   </Card>
@@ -95,9 +148,25 @@ function ShowWorldCards(props){
                 </TouchableOpacity>
                   }
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={()=> {
-                  props.setSelectedCard(findCardObject(item.id))
-                  }}>
+                <TouchableOpacity 
+                  onPress={()=> {
+                    props.setSelectedCard(findCardObject(item.id))
+                  }}
+                  onLongPress={() => 
+                    Alert.alert("Delete This Relationship?",
+                      "are you sure?",
+                    [
+                      {
+                        text: 'Cancel',
+                        style: 'cancel',
+                      },
+                      {text: 'OK', onPress: () => {
+                        removeRelationshipFetch(null, item.id)
+                        props.removeRelationship(selectedCard.id, item.id)
+                      }},
+                    ]
+                  )}
+                >
                   <Card>
                     <Text>{item.name}</Text>
                   </Card>
@@ -128,9 +197,13 @@ function ShowWorldCards(props){
           />
         </Modal>            
 
-        
+        <SearchBar
+          placeholder="Type Here..."
+          onChangeText={setSearch}
+          value = {search}
+        />
         <FlatList
-          data={worldCards()}
+          data={searchCards()}
           renderItem={({ item }) => (
             <TouchableOpacity 
               onPress={()=> {
@@ -174,7 +247,9 @@ const mapDispatchToProps = (dispatch) => ({
   addCardToCards: (card) => dispatch(addCardToCardsAction(card)),
   setSelectedCard: (card) => dispatch(setSelectedCardAction(card)),
   removeSelectedCard: () => dispatch({type: "REMOVE_SELECTED_CARD"}),
-  updateCardInCards: (card) => dispatch(updateCardInCardsAction(card))
+  updateCardInCards: (card) => dispatch(updateCardInCardsAction(card)),
+  addRelationship: (parentId, childId) => dispatch(addRelationshipAction(parentId, childId)),
+  removeRelationship: (parentId, childId) => dispatch(removeRelationshipAction(parentId, childId))
 })
 
 const mapStateToProps = (state) => ({
@@ -188,7 +263,8 @@ const styles = StyleSheet.create({
   container:{
     backgroundColor: '#fffaf0',
     paddingBottom: 0,
-    flex: 1
+    flex: 1,
+    paddingTop:10
   },
   listContainer:{
     
@@ -197,7 +273,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: '#fffaf0'
+    backgroundColor: '#fffaf0',
+    paddingTop:10
   },
   scroll: {
     alignItems: "center",
@@ -206,7 +283,8 @@ const styles = StyleSheet.create({
     flex: 2.5,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: '#fffaf0'
+    backgroundColor: '#fffaf0',
+    paddingTop:10
   },
   title:{
     fontSize: 30,

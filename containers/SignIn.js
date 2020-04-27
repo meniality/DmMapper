@@ -43,7 +43,8 @@ const options = {
       error: 'You need to enter a username'
     },
     password: {
-      error: 'You need to enter a password'
+      error: 'You need to enter a password',
+      secureTextEntry: true
     },
   },
   stylesheet: formStyles
@@ -52,7 +53,7 @@ const options = {
 class SignIn extends Component {
   handleSubmit = () => {
     const value = this.refs.form.getValue();
-    fetch(`http://${URL}/login`, {
+    fetch(`${URL}/login`, {
       method: "POST",
       headers: {
         'Accept': 'application/json',
