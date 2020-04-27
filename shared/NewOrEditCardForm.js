@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import {StyleSheet, View, Button, TouchableWithoutFeedback, Keyboard, ScrollView} from 'react-native';
+import {StyleSheet, View, Button, TouchableOpacity, ScrollView} from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import t from 'tcomb-form-native';
 import {URL} from '../shared/BackendURL'
 
@@ -30,7 +31,6 @@ const formStyles = {
       fontSize: 18,
       marginBottom: 7,
       fontWeight: '600',
-      width: 300,
       textAlign: 'center',
     },
     error: {
@@ -66,7 +66,6 @@ const options = {
               fontSize: 18,
               marginBottom: 7,
               fontWeight: '600',
-              width: 300,
               textAlign: 'center',
             },
           },
@@ -83,18 +82,33 @@ const options = {
               }
           }
       }
-  },
+    },
     short_description: {
       label: "Short Description"
     },
+    favorite: {
+      hidden: true,
+    }
   },
   stylesheet: formStyles
 };
 
 export default class NewOrEditCardForm extends Component{
+
+  state = {
+    favoriteIconType: ""
+  }
+
+  favorite = () => {
+    return this.state.favoriteIconType == "star-o"
+      ? false
+      : true
+  }
+
   handleSubmit = () => {
     const value = this.refs.form.getValue();
     const cardId = this.props.selectedCard.id
+    console.log(value)
     value 
       ? this.props.selectedCard.name
         ? fetch(`${URL}/update_card`,{
@@ -104,7 +118,7 @@ export default class NewOrEditCardForm extends Component{
               'Content-Type': 'application/json',
             authorization: `bearer ${this.props.token}`
             },
-            body: JSON.stringify({card: {...value, id: cardId}})
+            body: JSON.stringify({card: {...value, favorite: this.favorite(), id: cardId}})
           })
           .then(response => response.json())
           .then(responsejson => {
@@ -112,7 +126,6 @@ export default class NewOrEditCardForm extends Component{
             this.props.setSelectedCard(this.findCardObject(cardId))
             this.props.setNewCardModalOpen(false)
           })
-        
 
         : fetch(`${URL}/cards#campaign_cards`, {
             method: "POST",
@@ -131,6 +144,16 @@ export default class NewOrEditCardForm extends Component{
       : console.log("nope")
   }
 
+  handleStarSubmit = () => {
+    // this.props.updateFavorite(this.props.selectedCard)
+    if (this.state.favoriteIconType == "star-o"){
+      return this.setState({favoriteIconType: "star"})
+    }
+    else {
+      this.setState({favoriteIconType: "star-o"})
+    }
+  }
+
   findCardObject = (id) => {
     const newSecetedCard = this.props.cards.filter(card => {
       return card.id === id
@@ -138,25 +161,57 @@ export default class NewOrEditCardForm extends Component{
     return newSecetedCard[0]
   }
 
+  isCardFavorite = () => {
+    this.props.selectedCard.favorite
+      ? this.setState({favoriteIconType: "star"})
+      : this.setState({favoriteIconType: "star-o"})
+  }
+
+  setFavoriteIcon = () => {
+    if (this.state.favoriteIconType == "star-o"){
+      return this.setState({favoriteIconType: "star"})
+    }
+    else {
+      this.setState({favoriteIconType: "star-o"})
+    }
+  }
+  componentDidMount(){
+    this.isCardFavorite()
+  }
+
   render(){
     const value = {
       name: this.props.selectedCard.name,
       image: this.props.selectedCard.image,
       short_description: this.props.selectedCard.short_description,
-      text: this.props.selectedCard.text
+      text: this.props.selectedCard.text,
+      favorite: this.props.selectedCard.favorite
     }
 
-    return(
+    return(  
       <ScrollView>
         <View style = {styles.container}>
-          <View style={styles.closeButton}>
-            <Button title='Close' onPress={()=>{this.props.setNewCardModalOpen(false)}}></Button>
+          <View style={styles.closeAndFavorite}>
+            <View style={styles.closeButton}>
+              <Button title='Close' onPress={()=>{this.props.setNewCardModalOpen(false)}}></Button>
+            </View>
+            <TouchableOpacity 
+              style={styles.favoriteIcon}
+              onPress = {() => {
+                value.favorite=!value.favorite
+                this.handleStarSubmit()
+                this.setFavoriteIcon()
+              }}
+            >
+              <Icon name = {this.state.favoriteIconType} size={40} color="#ffd700" />
+            </TouchableOpacity>
           </View>
           <Form 
-              ref="form"
-              options={options}
-              value={value}
-              type={User} />
+            ref="form"
+            options={options}
+            value={value}
+            type={User} 
+          />
             <View style={styles.buttonsContainer}>
               <Button style={styles.button}
                 title="Submit"
@@ -171,15 +226,26 @@ export default class NewOrEditCardForm extends Component{
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 20,
+    paddingTop: 10,
     flex: 1,
     alignItems: 'center',
     backgroundColor: '#fffaf0',
     height: 1300,
     overflow: 'scroll',
   },
-  closeButton: {
-    height: 60
+  closeAndFavorite: {
+    height: 60,
+    flexDirection: 'row',
+    alignSelf: 'stretch',
+    justifyContent: 'center',
+  },
+  closeButton:{
+    justifyContent: 'center',
+  },
+  favoriteIcon: {
+    position: 'absolute',
+    alignSelf: 'center',
+    right: 10
   },
   buttonsContainer:{
     justifyContent: 'center',

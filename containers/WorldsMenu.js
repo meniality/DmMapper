@@ -64,10 +64,7 @@ function WorldsMenu(props){
           renderItem={({ item }) => (
             <TouchableOpacity 
               onPress={()=> props.navigation.navigate('World Menu', 
-                {item, 
-                // cards,
-                // addNewCardToCards,
-                // removeCardFromCards,
+                {item,
                 removeCardFromDatabase
               })}
               onLongPress={() => 

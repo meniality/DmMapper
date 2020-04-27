@@ -9,6 +9,7 @@ import {connect} from 'react-redux'
 import { SearchBar } from 'react-native-elements'
 import actions from '../src/actions'
 import {URL} from '../shared/BackendURL'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const {cardsActions: {removeCardFromCardsAction, 
                       addCardToCardsAction, 
@@ -16,7 +17,7 @@ const {cardsActions: {removeCardFromCardsAction,
                       addRelationshipAction,
                       removeRelationshipAction
                       }} = actions
-const {selectedCardActions: {setSelectedCardAction}} = actions
+const {selectedCardActions: {setSelectedCardAction, updateFavoriteAction}} = actions
 
 function ShowWorldCards(props){
   const {cards, selectedCard} = props
@@ -46,6 +47,12 @@ function ShowWorldCards(props){
       return card.id === id
     })
     return newSecetedCard[0]
+  }
+
+  const determineFavorite = (item) => {
+    return item.favorite
+      ? "star"
+      : "star-o"
   }
 
   const removeRelationshipFetch = (parentId, childId) => {
@@ -184,6 +191,7 @@ function ShowWorldCards(props){
             world_id = {world_id}
             setNewCardModalOpen={setNewCardModalOpen} 
             cardsAction={props.addCardToCards}
+            updateFavorite={props.updateFavorite}
           />
         </Modal>   
 
@@ -227,6 +235,7 @@ function ShowWorldCards(props){
             >
               <Card>
                 <Text>{item.name}</Text>
+                <Icon name = {determineFavorite(item)} size={40} color="#ffd700" />
               </Card>
             </TouchableOpacity>
           )}
@@ -246,6 +255,7 @@ const mapDispatchToProps = (dispatch) => ({
   removeCardFromCards: (card) => dispatch(removeCardFromCardsAction(card)),
   addCardToCards: (card) => dispatch(addCardToCardsAction(card)),
   setSelectedCard: (card) => dispatch(setSelectedCardAction(card)),
+  updateFavorite: (card) => dispatch(updateFavoriteAction(card)),
   removeSelectedCard: () => dispatch({type: "REMOVE_SELECTED_CARD"}),
   updateCardInCards: (card) => dispatch(updateCardInCardsAction(card)),
   addRelationship: (parentId, childId) => dispatch(addRelationshipAction(parentId, childId)),
