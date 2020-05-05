@@ -23,7 +23,7 @@ redux: ^4.0.5,
 tcomb-form-native: ^0.6.20
 
 to run
-
+1A. if running backend locally you will need to update the URL for fetch requests. Go to file shared/BackendURL.js and update const URL to "your.local.ip.address:3000" for example "10.0.0.66:3000". The IP address changes every time you reconnect to a network so this const will need to be updated each time you reconnect to a network. Your machine running the backend and the device running the frontend must also be on the same network for the tunnel to connect.
 1. in terminal run $npm install expo-cli --global
 2. in terminal run $expo start
 3. download expo app on android phone
